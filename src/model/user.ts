@@ -1,5 +1,5 @@
 export enum UserRole {
-  Civillian = "civillian",
+  Rider = "rider",
   Hospital = "hospital",
   Police = "police",
   Admin = "admin",
