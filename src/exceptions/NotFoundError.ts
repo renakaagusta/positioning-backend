@@ -9,4 +9,4 @@ class NotFoundError extends ClientError implements ErrorInterface {
   }
 }
 
-module.exports = NotFoundError
+export default NotFoundError

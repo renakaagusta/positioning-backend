@@ -1,0 +1,225 @@
+<html>
+  <head>
+    <style>
+      .map {
+        height: 80%;
+        width: 80%;
+      }
+    </style>
+    <title>Location Based</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+    />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="data.js"></script>
+    <script src="graph.js"></script>
+    <script src="routing.js"></script>
+  </head>
+
+  <body>
+    <nav class="navbar navbar-inverse">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="#">Location based</a>
+        </div>
+        <ul class="nav navbar-nav">
+          <li><a href="">Route</a></li>
+        </ul>
+        <ul class="nav navbar-nav">
+          <li><a href="geojson">GeoJSON</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <div>
+      <div style="width: 100%; padding-left: 10%; padding-bottom: 100px">
+        <h1>Shortest Path</h1>
+
+        <h3>Input Form</h3>
+        Starting point
+        <br />
+        <input type="text" id="starting_point" />
+        <br />
+        End point
+        <br />
+        <input type="text" id="end_point" style="margin-bottom: 10px" /><br />
+        <button id="getRoute" style="margin-top: 20px">Submit</button>
+        <h3>Maps</h3>
+        <div id="map" class="map"></div>
+        <h3>Total Shortest Path Weight</h3>
+        <div id="total">-</div>
+        <h3>Data</h3>
+        <div id="data"></div>
+      </div>
+    </div>
+
+    <script
+      async
+      defer
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAZx73zdc1lJUyFNnR3Wst_ucKT-QEaLhQ&libraries=drawing&callback=initMap"
+    ></script>
+    <script>
+      var center = {
+        lat: -7.238922,
+        lng: 112.735021
+      }
+
+      var Path
+      var mapWeight
+      var map
+
+      async function initMap () {
+        await connector()
+        console.log('graph')
+        console.log(graph)
+
+        var table = document.createElement('table')
+        table.className = "table border"
+        var row = document.createElement('tr')
+        var cell = document.createElement('th')
+        cell.textContent = "From"
+        row.appendChild(cell)
+        cell = document.createElement('th')
+        cell.textContent = "To"
+        row.appendChild(cell)
+        cell = document.createElement('th')
+        cell.textContent = "Distance (m)"
+        row.appendChild(cell)
+        table.appendChild(row)
+        for (var i = 0; i < calculatedData.length; i++) {
+          var row = document.createElement('tr')
+          for (var j = 0; j < calculatedData[i].length; j++) {
+            var cell = document.createElement('td')
+            cell.textContent = calculatedData[i][j]
+            row.appendChild(cell)
+          }
+          table.appendChild(row)
+        }
+        document.getElementById('data').appendChild(table);
+
+        map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 17,
+          center: center,
+          mapTypeId: google.maps.MapTypeId.ROADMAP
+        })
+
+        map.data.loadGeoJson(data)
+
+        Path = new google.maps.Polyline({
+          geodesic: true,
+          strokeColor: '#FF0000',
+          strokeOpacity: 1.0,
+          strokeWeight: 2
+        })
+
+        var line
+        Path.setMap(mapWeight)
+
+        let indexVertex = 0
+        while (graph.vertices[indexVertex] !== null) {
+          let node = 0
+          let vertexKey = Object.keys(graph.vertices[indexVertex])
+          vertexKey.map(key => {
+            new google.maps.Marker({
+              position: {
+                lat:
+                  (data.features[indexVertex].geometry.coordinates[1] +
+                    data.features[parseInt(key)].geometry.coordinates[1]) /
+                  2,
+                lng:
+                  (data.features[indexVertex].geometry.coordinates[0] +
+                    data.features[parseInt(key)].geometry.coordinates[0]) /
+                  2
+              },
+              map: map,
+              icon: {
+                url: './empty.png',
+                scaledSize: new google.maps.Size(0, 0),
+                origin: new google.maps.Point(0, 0),
+                anchor: new google.maps.Point(0, 0)
+              },
+              label: {
+                color: '#0000FF',
+                text: graph.vertices[indexVertex][key].toFixed(4).toString(),
+                fontSize: '14px'
+              }
+            })
+
+            new google.maps.Polyline({
+              path: [
+                {
+                  lat: data.features[indexVertex].geometry.coordinates[1],
+                  lng: data.features[indexVertex].geometry.coordinates[0]
+                },
+                {
+                  lat: data.features[parseInt(key)].geometry.coordinates[1],
+                  lng: data.features[parseInt(key)].geometry.coordinates[0]
+                }
+              ],
+              geodesic: true,
+              strokeColor: '#000000',
+              strokeOpacity: 1.0,
+              strokeWeight: 2,
+              map: map
+            })
+          })
+
+          indexVertex++
+        }
+
+        for (var i = 0; i < data.features.length; i++) {
+          console.log(i)
+          var token = false
+
+          var coords = data.features[i].geometry.coordinates
+          var latLng = new google.maps.LatLng(coords[1], coords[0])
+
+          var lat_t = parseFloat(latLng.lat())
+          var lng_t = parseFloat(latLng.lng())
+
+          if (token == false) {
+            var marker = new google.maps.Marker({
+              position: latLng,
+              map: map,
+              label: { text: data.features[i].properties['text'] }
+            })
+          }
+
+          const trafficLayer = new google.maps.TrafficLayer()
+
+          trafficLayer.setMap(map)
+        }
+
+        var submit_button = document.getElementById('getRoute')
+        google.maps.event.addDomListener(submit_button, 'click', function () {
+          Path = new google.maps.Polyline({
+            geodesic: true,
+            strokeColor: '#4444FF',
+            strokeOpacity: 1.0,
+            strokeWeight: 2
+          })
+          var line
+          Path.setMap(map)
+          path_temp = route_setup()
+          for (var i = 0; i < path_temp.length; ++i) {
+            var latLng_temp = new google.maps.LatLng(
+              path_temp[i].lat,
+              path_temp[i].lng
+            )
+            line = Path.getPath()
+            line.push(latLng_temp)
+          }
+
+          console.log("total")
+          console.log(totalShortestPathWeight)
+          document.getElementById('total').innerHTML = totalShortestPathWeight.toString()
+        })
+      }
+    </script>
+  </body>
+</html>

@@ -9,4 +9,4 @@ class AuthenticationError extends ClientError implements ErrorInterface {
   }
 }
 
-module.exports = AuthenticationError;
+export default AuthenticationError

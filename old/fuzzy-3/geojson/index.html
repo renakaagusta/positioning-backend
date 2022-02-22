@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=no"
+    />
+    <meta charset="utf-8" />
+
+    <title>location Based</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+    />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link
+      href="css/styles.css"
+      title="compact"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&key=AIzaSyAZx73zdc1lJUyFNnR3Wst_ucKT-QEaLhQ"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script src="js/editor.js"></script>
+  </head>
+
+  <body>
+    <div id="panel">
+      <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+          <div class="navbar-header">
+            <a class="navbar-brand" href="#">Location based</a>
+          </div>
+
+          <ul class="nav navbar-nav">
+            <li><a href="../">Route</a></li>
+          </ul>
+          <ul class="nav navbar-nav">
+            <li><a href="">GeoJSON</a></li>
+          </ul>
+        </div>
+      </nav>
+      <div id="panel-content">
+        <div id="panel-title">GeoJSON Editor</div>
+        <hr />
+        <div id="geojson-controls">
+          <button onclick="document.getElementById('geojson-input').select();">
+            Select All
+          </button>
+          <a id="download-link" href="data:;base64," download="geojson.json"
+            ><button>Download</button></a
+          >
+        </div>
+        <textarea
+          id="geojson-input"
+          placeholder="Drag and drop GeoJSON onto the map or paste it here to begin editing."
+        ></textarea>
+      </div>
+    </div>
+
+    <div id="map-container">
+      <div id="map-holder"></div>
+
+      <div id="drop-container">
+        <div id="drop-silhouette"></div>
+      </div>
+    </div>
+  </body>
+</html>

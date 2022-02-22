@@ -1,48 +1,48 @@
-enum UserRole {
+export enum UserRole {
   Civillian = "civillian",
   Hospital = "hospital",
   Police = "police",
   Admin = "admin",
 }
 
-interface LocationInterface {
+export interface LocationInterface {
   latitude: number,
   longitude: number
 }
 
-interface UserLocationInterface {
+export interface UserLocationInterface {
   static: LocationInterface,
   dynamic: LocationInterface
 }
 
-interface UserMetaInterface {
+export interface UserMetaInterface {
   location: UserLocationInterface
 }
 
-interface UserInterfcae {
-  id: string;
+export interface UserInterface {
+  id?: string;
   name: string;
   username: string;
   email: string;
-  google: string;
+  google?: string;
   password: string;
-  meta: UserMetaInterface;
+  meta?: UserMetaInterface;
   role: UserRole;
   createdAt: Date;
 }
 
-export default class User implements UserInterfcae {
-  public id: string;
+export default class User implements UserInterface {
+  public id?: string;
   public name: string;
   public username: string;
   public email: string;
-  public google: string;
+  public google?: string;
   public password: string;
-  public meta: UserMetaInterface
+  public meta?: UserMetaInterface
   public role: UserRole;
   public createdAt: Date;
 
-  constructor(user: UserInterfcae) {
+  constructor(user: UserInterface) {
     this.id = user.id;
     this.name = user.name;
     this.username = user.username;

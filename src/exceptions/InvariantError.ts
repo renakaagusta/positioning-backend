@@ -7,4 +7,4 @@ class InvariantError extends ClientError {
   }
 }
 
-module.exports = InvariantError
+export default InvariantError
