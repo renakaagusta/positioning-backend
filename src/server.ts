@@ -15,12 +15,27 @@ import AuthenticationsService from './services/firestore/AuthenticationsService'
 import TokenManager from './tokenize/TokenManager';
 import AuthenticationsValidator from './validator/authentications';
 
+import PointCollectionsPlugin from './api/pointCollections';
+import PointCollectionsService from './services/firestore/PointCollectionsService';
+import PointCollectionsValidator from './validator/pointCollections';
+
+import ReportsPlugin from './api/reports';
+import ReportsService from './services/firestore/ReportsService';
+import ReportsValidator from './validator/reports';
+
+import RouteCollectionsPlugin from './api/routeCollections';
+import RouteCollectionsService from './services/firestore/RouteCollectionsService';
+import RouteCollectionsValidator from './validator/routeCollections';
+
 import UsersPlugin from './api/users';
 import UsersService from './services/firestore/UsersService';
 import UsersValidator from './validator/users';
 
 export const init = async function(): Promise<Server> {
     const authenticationsService = new AuthenticationsService()
+    const pointCollectionsService = new PointCollectionsService()
+    const reportsService = new ReportsService()
+    const routeCollectionsService = new RouteCollectionsService()
     const usersService = new UsersService()
     
     server = Hapi.server({
@@ -61,6 +76,27 @@ export const init = async function(): Promise<Server> {
                 usersService,
                 tokenManager: TokenManager,
                 validator: AuthenticationsValidator,
+            },
+        },
+        {
+            plugin: PointCollectionsPlugin,
+            options: {
+                service: pointCollectionsService,
+                validator: PointCollectionsValidator,
+            },
+        },
+        {
+            plugin: ReportsPlugin,
+            options: {
+                service: reportsService,
+                validator: ReportsValidator,
+            },
+        },
+        {
+            plugin: RouteCollectionsPlugin,
+            options: {
+                service: routeCollectionsService,
+                validator: RouteCollectionsValidator,
             },
         },
         {

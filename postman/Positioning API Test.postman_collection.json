@@ -248,6 +248,893 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Get All User Collection",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('it should response 200 status code', () => {\r",
+									"    pm.expect(pm.response).to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test('response Content-Type header should have application/json value', () => {\r",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.includes('application/json');\r",
+									"}); \r",
+									"\r",
+									"pm.test('response body should an object', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"});\r",
+									"\r",
+									"pm.test('response body have correct property and value', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson.status).to.equal('success');\r",
+									"    pm.expect(responseJson.data).to.be.an('object');\r",
+									"    pm.expect(responseJson.data.songs).to.be.an('array');\r",
+									"    pm.expect(responseJson.data.songs).to.length.least(2);\r",
+									"\r",
+									"    const songs = responseJson.data.songs;\r",
+									"    songs.forEach((song) => {\r",
+									"        pm.expect(Object.keys(song)).to.length(3);\r",
+									"        pm.expect(song.id).to.be.ok;\r",
+									"        pm.expect(song.title).to.be.ok;\r",
+									"        pm.expect(song.performer).to.be.ok;\r",
+									"    });\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:{{port}}/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{port}}",
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Route Collection",
+			"item": [
+				{
+					"name": "Add Route Collection with Invalid Payload",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let badUserPayloads = pm.environment.get('badUserPayloads');\r",
+									"\r",
+									"if (!badUserPayloads | badUserPayloads.length === 0) {\r",
+									"    badUserPayloads = [\r",
+									"        {},\r",
+									"        { username: 1 },\r",
+									"        { username: 'dicoding' },\r",
+									"        { username: 'dicoding', password: true },\r",
+									"        { username: 'dicoding', passowrd: 'secret' },\r",
+									"        { username: 'dicoding', password: 'secret', fullname: 0 }\r",
+									"    ];\r",
+									"}\r",
+									"\r",
+									"const currentBadUserPayload = badUserPayloads.shift();\r",
+									"pm.environment.set('currentBadUserPayload', JSON.stringify(currentBadUserPayload));\r",
+									"pm.environment.set('badUserPayloads', badUserPayloads);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('it should response 400 status code', () => {\r",
+									"    pm.expect(pm.response).to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test('response Content-Type header should have application/json value', () => {\r",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.includes('application/json');\r",
+									"}); \r",
+									"\r",
+									"pm.test('response body should an object', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"});\r",
+									"\r",
+									"pm.test('response body have correct property and value', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson.status).to.equal('fail');\r",
+									"    pm.expect(responseJson.message).to.be.a('string');\r",
+									"})\r",
+									"\r",
+									"const repeatRequestUntilDatasetEmpty = () => {\r",
+									"    const badUserPayloads = pm.environment.get('badUserPayloads');\r",
+									" \r",
+									"    if(badUserPayloads && badUserPayloads.length > 0) {\r",
+									"        postman.setNextRequest('Add User with Invalid Payload');\r",
+									"    }\r",
+									"}\r",
+									" \r",
+									"repeatRequestUntilDatasetEmpty();"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{{currentBadRoutePayload}}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:{{port}}/route-collections",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{port}}",
+							"path": [
+								"route-collections"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Route Collection with Valid Payload",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('it should response 201 status code', () => {\r",
+									"    pm.expect(pm.response).to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"pm.test('response Content-Type header should have application/json value', () => {\r",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.includes('application/json');\r",
+									"}); \r",
+									"\r",
+									"pm.test('response body should an object', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"});\r",
+									"\r",
+									"pm.test('response body have correct property and value', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson.status).to.equal('success');\r",
+									"    pm.expect(responseJson.data).to.be.an('object');\r",
+									"    pm.expect(responseJson.data.userId).to.be.a('string');\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"data\": [\r\n        {\r\n            \"from\": \"0\",\r\n            \"to\": [\r\n                \"1\"\r\n            ]\r\n        },\r\n        {\r\n            \"to\": [\r\n                \"2\",\r\n                \"3\"\r\n            ],\r\n            \"from\": \"1\"\r\n        },\r\n        {\r\n            \"from\": \"2\",\r\n            \"to\": [\r\n                \"7\"\r\n            ]\r\n        },\r\n        {\r\n            \"to\": [\r\n                \"5\"\r\n            ],\r\n            \"from\": \"4\"\r\n        },\r\n        {\r\n            \"to\": [\r\n                \"6\",\r\n                \"8\"\r\n            ],\r\n            \"from\": \"5\"\r\n        },\r\n        {\r\n            \"to\": [\r\n                \"7\",\r\n                \"9\"\r\n            ],\r\n            \"from\": \"6\"\r\n        },\r\n        {\r\n            \"to\": [\r\n                \"11\"\r\n            ],\r\n            \"from\": \"7\"\r\n        },\r\n        {\r\n            \"from\": \"8\",\r\n            \"to\": [\r\n                \"9\",\r\n                \"12\"\r\n            ]\r\n        },\r\n        {\r\n            \"to\": [\r\n                \"10\"\r\n            ],\r\n            \"from\": \"9\"\r\n        },\r\n        {\r\n            \"from\": \"10\",\r\n            \"to\": [\r\n                \"11\",\r\n                \"13\"\r\n            ]\r\n        },\r\n        {\r\n            \"to\": [\r\n                \"14\"\r\n            ],\r\n            \"from\": \"11\"\r\n        },\r\n        {\r\n            \"to\": [\r\n                \"13\"\r\n            ],\r\n            \"from\": \"12\"\r\n        },\r\n        {\r\n            \"from\": \"13\",\r\n            \"to\": [\r\n                \"14\"\r\n            ]\r\n        },\r\n        {\r\n            \"from\": \"13\",\r\n            \"to\": []\r\n        }\r\n    ],\r\n    \"type\": \"up\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:{{port}}/route-collections",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{port}}",
+							"path": [
+								"route-collections"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Route Collection with Already Taken Type",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const port = pm.environment.get('port');\r",
+									"\r",
+									"const requestParams = {\r",
+									"  url: `http://localhost:${port}/users`,\r",
+									"  method: 'POST',\r",
+									"  header: {\r",
+									"    'Content-Type': 'application/json',\r",
+									"  },\r",
+									"  body: {\r",
+									"    mode: 'raw',\r",
+									"    raw: JSON.stringify({ username: 'dicoding', password: 'secret', fullname: 'Dicoding Indonesia' })\r",
+									"  }\r",
+									"};\r",
+									"pm.sendRequest(requestParams, (_, error) => {\r",
+									"    if (error) {\r",
+									"        console.error(error);\r",
+									"    }\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('it should response 400 status code', () => {\r",
+									"    pm.expect(pm.response).to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test('response Content-Type header should have application/json value', () => {\r",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.includes('application/json');\r",
+									"}); \r",
+									"\r",
+									"pm.test('response body should an object', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"});\r",
+									"\r",
+									"pm.test('response body have correct property and value', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson.status).to.equal('fail');\r",
+									"    pm.expect(responseJson.message).to.be.a('string');\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"up\",\r\n    \"routes\": [\r\n        {\r\n            \"from\": \"0\",\r\n            \"to\": [\r\n                \"1\"\r\n            ]\r\n        },\r\n        {\r\n            \"from\": \"1\",\r\n            \"to\": [\r\n                \"2\",\r\n                \"3\"\r\n            ]\r\n        },\r\n        {\r\n            \"from\": \"2\",\r\n            \"to\": [\r\n                \"7\"\r\n            ]\r\n        },\r\n        {\r\n            \"from\": \"4\",\r\n            \"to\": [\r\n                \"5\"\r\n            ]\r\n        },\r\n        {\r\n            \"from\": \"5\",\r\n            \"to\": [\r\n                \"6\",\r\n                \"8\"\r\n            ]\r\n        },\r\n        {\r\n            \"from\": \"6\",\r\n            \"to\": [\r\n                \"7\",\r\n                \"9\"\r\n            ]\r\n        },\r\n        {\r\n            \"from\": \"7\",\r\n            \"to\": [\r\n                \"11\"\r\n            ]\r\n        },\r\n        {\r\n            \"from\": \"8\",\r\n            \"to\": [\r\n                \"9\",\r\n                \"12\"\r\n            ]\r\n        },\r\n        {\r\n            \"from\": \"9\",\r\n            \"to\": [\r\n                \"10\"\r\n            ]\r\n        },\r\n        {\r\n            \"from\": \"10\",\r\n            \"to\": [\r\n                \"11\",\r\n                \"13\"\r\n            ]\r\n        },\r\n        {\r\n            \"from\": \"11\",\r\n            \"to\": [\r\n                \"14\"\r\n            ]\r\n        },\r\n        {\r\n            \"from\": \"12\",\r\n            \"to\": [\r\n                \"13\"\r\n            ]\r\n        },\r\n        {\r\n            \"from\": \"13\",\r\n            \"to\": [\r\n                \"14\"\r\n            ]\r\n        },\r\n        {\r\n            \"from\": \"13\",\r\n            \"to\": []\r\n        },\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:{{port}}/route-collections",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{port}}",
+							"path": [
+								"route-collections"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Route Collection",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('it should response 200 status code', () => {\r",
+									"    pm.expect(pm.response).to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test('response Content-Type header should have application/json value', () => {\r",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.includes('application/json');\r",
+									"}); \r",
+									"\r",
+									"pm.test('response body should an object', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"});\r",
+									"\r",
+									"pm.test('response body have correct property and value', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson.status).to.equal('success');\r",
+									"    pm.expect(responseJson.data).to.be.an('object');\r",
+									"    pm.expect(responseJson.data.songs).to.be.an('array');\r",
+									"    pm.expect(responseJson.data.songs).to.length.least(2);\r",
+									"\r",
+									"    const songs = responseJson.data.songs;\r",
+									"    songs.forEach((song) => {\r",
+									"        pm.expect(Object.keys(song)).to.length(3);\r",
+									"        pm.expect(song.id).to.be.ok;\r",
+									"        pm.expect(song.title).to.be.ok;\r",
+									"        pm.expect(song.performer).to.be.ok;\r",
+									"    });\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:{{port}}/route-collections",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{port}}",
+							"path": [
+								"route-collections"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Report",
+			"item": [
+				{
+					"name": "Add Report with Invalid Payload",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let badUserPayloads = pm.environment.get('badUserPayloads');\r",
+									"\r",
+									"if (!badUserPayloads | badUserPayloads.length === 0) {\r",
+									"    badUserPayloads = [\r",
+									"        {},\r",
+									"        { username: 1 },\r",
+									"        { username: 'dicoding' },\r",
+									"        { username: 'dicoding', password: true },\r",
+									"        { username: 'dicoding', passowrd: 'secret' },\r",
+									"        { username: 'dicoding', password: 'secret', fullname: 0 }\r",
+									"    ];\r",
+									"}\r",
+									"\r",
+									"const currentBadUserPayload = badUserPayloads.shift();\r",
+									"pm.environment.set('currentBadUserPayload', JSON.stringify(currentBadUserPayload));\r",
+									"pm.environment.set('badUserPayloads', badUserPayloads);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('it should response 400 status code', () => {\r",
+									"    pm.expect(pm.response).to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test('response Content-Type header should have application/json value', () => {\r",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.includes('application/json');\r",
+									"}); \r",
+									"\r",
+									"pm.test('response body should an object', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"});\r",
+									"\r",
+									"pm.test('response body have correct property and value', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson.status).to.equal('fail');\r",
+									"    pm.expect(responseJson.message).to.be.a('string');\r",
+									"})\r",
+									"\r",
+									"const repeatRequestUntilDatasetEmpty = () => {\r",
+									"    const badUserPayloads = pm.environment.get('badUserPayloads');\r",
+									" \r",
+									"    if(badUserPayloads && badUserPayloads.length > 0) {\r",
+									"        postman.setNextRequest('Add User with Invalid Payload');\r",
+									"    }\r",
+									"}\r",
+									" \r",
+									"repeatRequestUntilDatasetEmpty();"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{{currentBadRoutePayload}}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:{{port}}/reports",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{port}}",
+							"path": [
+								"reports"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Report with Valid Payload",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('it should response 201 status code', () => {\r",
+									"    pm.expect(pm.response).to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"pm.test('response Content-Type header should have application/json value', () => {\r",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.includes('application/json');\r",
+									"}); \r",
+									"\r",
+									"pm.test('response body should an object', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"});\r",
+									"\r",
+									"pm.test('response body have correct property and value', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson.status).to.equal('success');\r",
+									"    pm.expect(responseJson.data).to.be.an('object');\r",
+									"    pm.expect(responseJson.data.userId).to.be.a('string');\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:{{port}}/reports",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{port}}",
+							"path": [
+								"reports"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Report",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('it should response 200 status code', () => {\r",
+									"    pm.expect(pm.response).to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test('response Content-Type header should have application/json value', () => {\r",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.includes('application/json');\r",
+									"}); \r",
+									"\r",
+									"pm.test('response body should an object', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"});\r",
+									"\r",
+									"pm.test('response body have correct property and value', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson.status).to.equal('success');\r",
+									"    pm.expect(responseJson.data).to.be.an('object');\r",
+									"    pm.expect(responseJson.data.songs).to.be.an('array');\r",
+									"    pm.expect(responseJson.data.songs).to.length.least(2);\r",
+									"\r",
+									"    const songs = responseJson.data.songs;\r",
+									"    songs.forEach((song) => {\r",
+									"        pm.expect(Object.keys(song)).to.length(3);\r",
+									"        pm.expect(song.id).to.be.ok;\r",
+									"        pm.expect(song.title).to.be.ok;\r",
+									"        pm.expect(song.performer).to.be.ok;\r",
+									"    });\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:{{port}}/reports",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{port}}",
+							"path": [
+								"reports"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Point Collection",
+			"item": [
+				{
+					"name": "Add Point Collection with Invalid Payload",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let badUserPayloads = pm.environment.get('badUserPayloads');\r",
+									"\r",
+									"if (!badUserPayloads | badUserPayloads.length === 0) {\r",
+									"    badUserPayloads = [\r",
+									"        {},\r",
+									"        { username: 1 },\r",
+									"        { username: 'dicoding' },\r",
+									"        { username: 'dicoding', password: true },\r",
+									"        { username: 'dicoding', passowrd: 'secret' },\r",
+									"        { username: 'dicoding', password: 'secret', fullname: 0 }\r",
+									"    ];\r",
+									"}\r",
+									"\r",
+									"const currentBadUserPayload = badUserPayloads.shift();\r",
+									"pm.environment.set('currentBadUserPayload', JSON.stringify(currentBadUserPayload));\r",
+									"pm.environment.set('badUserPayloads', badUserPayloads);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('it should response 400 status code', () => {\r",
+									"    pm.expect(pm.response).to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test('response Content-Type header should have application/json value', () => {\r",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.includes('application/json');\r",
+									"}); \r",
+									"\r",
+									"pm.test('response body should an object', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"});\r",
+									"\r",
+									"pm.test('response body have correct property and value', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson.status).to.equal('fail');\r",
+									"    pm.expect(responseJson.message).to.be.a('string');\r",
+									"})\r",
+									"\r",
+									"const repeatRequestUntilDatasetEmpty = () => {\r",
+									"    const badUserPayloads = pm.environment.get('badUserPayloads');\r",
+									" \r",
+									"    if(badUserPayloads && badUserPayloads.length > 0) {\r",
+									"        postman.setNextRequest('Add User with Invalid Payload');\r",
+									"    }\r",
+									"}\r",
+									" \r",
+									"repeatRequestUntilDatasetEmpty();"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{{currentBadPointPayload}}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:{{port}}/point-collections",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{port}}",
+							"path": [
+								"point-collections"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Point Collection with Valid Payload",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('it should response 201 status code', () => {\r",
+									"    pm.expect(pm.response).to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"pm.test('response Content-Type header should have application/json value', () => {\r",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.includes('application/json');\r",
+									"}); \r",
+									"\r",
+									"pm.test('response body should an object', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"});\r",
+									"\r",
+									"pm.test('response body have correct property and value', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson.status).to.equal('success');\r",
+									"    pm.expect(responseJson.data).to.be.an('object');\r",
+									"    pm.expect(responseJson.data.userId).to.be.a('string');\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"data\": [\r\n        {\r\n            \"type\": \"Feature\",\r\n            \"properties\": {\r\n                \"text\": \"0\"\r\n            },\r\n            \"geometry\": {\r\n                \"coordinates\": [\r\n                    112.73640583197016,\r\n                    -7.2419431033902075\r\n                ],\r\n                \"type\": \"Point\"\r\n            }\r\n        },\r\n        {\r\n            \"geometry\": {\r\n                \"type\": \"Point\",\r\n                \"coordinates\": [\r\n                    112.736169,\r\n                    -7.241217\r\n                ]\r\n            },\r\n            \"properties\": {\r\n                \"text\": \"1\"\r\n            },\r\n            \"type\": \"Feature\"\r\n        },\r\n        {\r\n            \"properties\": {\r\n                \"text\": \"2\"\r\n            },\r\n            \"type\": \"Feature\",\r\n            \"geometry\": {\r\n                \"type\": \"Point\",\r\n                \"coordinates\": [\r\n                    112.733841,\r\n                    -7.240861\r\n                ]\r\n            }\r\n        },\r\n        {\r\n            \"properties\": {\r\n                \"text\": \"3\"\r\n            },\r\n            \"type\": \"Feature\",\r\n            \"geometry\": {\r\n                \"type\": \"Point\",\r\n                \"coordinates\": [\r\n                    112.736104,\r\n                    -7.240695\r\n                ]\r\n            }\r\n        },\r\n        {\r\n            \"type\": \"Feature\",\r\n            \"properties\": {\r\n                \"text\": \"4\"\r\n            },\r\n            \"geometry\": {\r\n                \"coordinates\": [\r\n                    112.73762,\r\n                    -7.240638\r\n                ],\r\n                \"type\": \"Point\"\r\n            }\r\n        },\r\n        {\r\n            \"properties\": {\r\n                \"text\": \"5\"\r\n            },\r\n            \"geometry\": {\r\n                \"type\": \"Point\",\r\n                \"coordinates\": [\r\n                    112.737589,\r\n                    -7.240283\r\n                ]\r\n            },\r\n            \"type\": \"Feature\"\r\n        },\r\n        {\r\n            \"type\": \"Feature\",\r\n            \"geometry\": {\r\n                \"coordinates\": [\r\n                    112.736087,\r\n                    -7.240198\r\n                ],\r\n                \"type\": \"Point\"\r\n            },\r\n            \"properties\": {\r\n                \"text\": \"6\"\r\n            }\r\n        },\r\n        {\r\n            \"geometry\": {\r\n                \"type\": \"Point\",\r\n                \"coordinates\": [\r\n                    112.734029,\r\n                    -7.23956\r\n                ]\r\n            },\r\n            \"type\": \"Feature\",\r\n            \"properties\": {\r\n                \"text\": \"7\"\r\n            }\r\n        },\r\n        {\r\n            \"geometry\": {\r\n                \"type\": \"Point\",\r\n                \"coordinates\": [\r\n                    112.737437,\r\n                    -7.239257\r\n                ]\r\n            },\r\n            \"type\": \"Feature\",\r\n            \"properties\": {\r\n                \"text\": \"8\"\r\n            }\r\n        },\r\n        {\r\n            \"properties\": {\r\n                \"text\": \"9\"\r\n            },\r\n            \"type\": \"Feature\",\r\n            \"geometry\": {\r\n                \"type\": \"Point\",\r\n                \"coordinates\": [\r\n                    112.736226,\r\n                    -7.239244\r\n                ]\r\n            }\r\n        },\r\n        {\r\n            \"type\": \"Feature\",\r\n            \"properties\": {\r\n                \"text\": \"10\"\r\n            },\r\n            \"geometry\": {\r\n                \"coordinates\": [\r\n                    112.735021,\r\n                    -7.238922\r\n                ],\r\n                \"type\": \"Point\"\r\n            }\r\n        },\r\n        {\r\n            \"properties\": {\r\n                \"text\": \"11\"\r\n            },\r\n            \"geometry\": {\r\n                \"type\": \"Point\",\r\n                \"coordinates\": [\r\n                    112.734176,\r\n                    -7.238802\r\n                ]\r\n            },\r\n            \"type\": \"Feature\"\r\n        },\r\n        {\r\n            \"type\": \"Feature\",\r\n            \"properties\": {\r\n                \"text\": \"12\"\r\n            },\r\n            \"geometry\": {\r\n                \"type\": \"Point\",\r\n                \"coordinates\": [\r\n                    112.737431,\r\n                    -7.238482\r\n                ]\r\n            }\r\n        },\r\n        {\r\n            \"properties\": {\r\n                \"text\": \"13\"\r\n            },\r\n            \"type\": \"Feature\",\r\n            \"geometry\": {\r\n                \"coordinates\": [\r\n                    112.735334,\r\n                    -7.237812\r\n                ],\r\n                \"type\": \"Point\"\r\n            }\r\n        },\r\n        {\r\n            \"geometry\": {\r\n                \"type\": \"Point\",\r\n                \"coordinates\": [\r\n                    112.734207,\r\n                    -7.23725\r\n                ]\r\n            },\r\n            \"type\": \"Feature\",\r\n            \"properties\": {\r\n                \"text\": \"14\"\r\n            }\r\n        }\r\n    ],\r\n    \"type\": \"down\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:{{port}}/point-collections",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{port}}",
+							"path": [
+								"point-collections"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Point Collection with Already Taken Type",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const port = pm.environment.get('port');\r",
+									"\r",
+									"const requestParams = {\r",
+									"  url: `http://localhost:${port}/users`,\r",
+									"  method: 'POST',\r",
+									"  header: {\r",
+									"    'Content-Type': 'application/json',\r",
+									"  },\r",
+									"  body: {\r",
+									"    mode: 'raw',\r",
+									"    raw: JSON.stringify({ username: 'dicoding', password: 'secret', fullname: 'Dicoding Indonesia' })\r",
+									"  }\r",
+									"};\r",
+									"pm.sendRequest(requestParams, (_, error) => {\r",
+									"    if (error) {\r",
+									"        console.error(error);\r",
+									"    }\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('it should response 400 status code', () => {\r",
+									"    pm.expect(pm.response).to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test('response Content-Type header should have application/json value', () => {\r",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.includes('application/json');\r",
+									"}); \r",
+									"\r",
+									"pm.test('response body should an object', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"});\r",
+									"\r",
+									"pm.test('response body have correct property and value', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson.status).to.equal('fail');\r",
+									"    pm.expect(responseJson.message).to.be.a('string');\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"up\",\r\n    \"routes\": [\r\n        {\r\n            \"from\": \"0\",\r\n            \"to\": [\r\n                \"1\"\r\n            ]\r\n        },\r\n        {\r\n            \"from\": \"1\",\r\n            \"to\": [\r\n                \"2\",\r\n                \"3\"\r\n            ]\r\n        },\r\n        {\r\n            \"from\": \"2\",\r\n            \"to\": [\r\n                \"7\"\r\n            ]\r\n        },\r\n        {\r\n            \"from\": \"4\",\r\n            \"to\": [\r\n                \"5\"\r\n            ]\r\n        },\r\n        {\r\n            \"from\": \"5\",\r\n            \"to\": [\r\n                \"6\",\r\n                \"8\"\r\n            ]\r\n        },\r\n        {\r\n            \"from\": \"6\",\r\n            \"to\": [\r\n                \"7\",\r\n                \"9\"\r\n            ]\r\n        },\r\n        {\r\n            \"from\": \"7\",\r\n            \"to\": [\r\n                \"11\"\r\n            ]\r\n        },\r\n        {\r\n            \"from\": \"8\",\r\n            \"to\": [\r\n                \"9\",\r\n                \"12\"\r\n            ]\r\n        },\r\n        {\r\n            \"from\": \"9\",\r\n            \"to\": [\r\n                \"10\"\r\n            ]\r\n        },\r\n        {\r\n            \"from\": \"10\",\r\n            \"to\": [\r\n                \"11\",\r\n                \"13\"\r\n            ]\r\n        },\r\n        {\r\n            \"from\": \"11\",\r\n            \"to\": [\r\n                \"14\"\r\n            ]\r\n        },\r\n        {\r\n            \"from\": \"12\",\r\n            \"to\": [\r\n                \"13\"\r\n            ]\r\n        },\r\n        {\r\n            \"from\": \"13\",\r\n            \"to\": [\r\n                \"14\"\r\n            ]\r\n        },\r\n        {\r\n            \"from\": \"13\",\r\n            \"to\": []\r\n        },\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:{{port}}/point-collections",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{port}}",
+							"path": [
+								"point-collections"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Point Collection",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('it should response 200 status code', () => {\r",
+									"    pm.expect(pm.response).to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test('response Content-Type header should have application/json value', () => {\r",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.includes('application/json');\r",
+									"}); \r",
+									"\r",
+									"pm.test('response body should an object', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"});\r",
+									"\r",
+									"pm.test('response body have correct property and value', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson.status).to.equal('success');\r",
+									"    pm.expect(responseJson.data).to.be.an('object');\r",
+									"    pm.expect(responseJson.data.songs).to.be.an('array');\r",
+									"    pm.expect(responseJson.data.songs).to.length.least(2);\r",
+									"\r",
+									"    const songs = responseJson.data.songs;\r",
+									"    songs.forEach((song) => {\r",
+									"        pm.expect(Object.keys(song)).to.length(3);\r",
+									"        pm.expect(song.id).to.be.ok;\r",
+									"        pm.expect(song.title).to.be.ok;\r",
+									"        pm.expect(song.performer).to.be.ok;\r",
+									"    });\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:{{port}}/point-collections",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{port}}",
+							"path": [
+								"point-collections"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},

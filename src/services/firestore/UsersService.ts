@@ -46,6 +46,19 @@ class UsersService {
     return result;
   }
 
+  async getUserList() {
+    const result = await this._firestore.collection('users').get()
+
+    const users: Array<UserInterface> = []
+    
+    result.docs.map((user)=>users.push({
+      id: user.id,
+      ...user.data() as UserInterface
+    }))
+
+    return users;
+  }
+
   async verifyUserCredential(username: string, password: string) {
     const result = await this._firestore.collection('users').where('username', '==', username).get()
 

@@ -7,6 +7,7 @@ import ClientError from '../../exceptions/ClientError';
 export interface UsersHandlerInterface {
   postUserHandler: (request: any, h: any) => void;
   getUserByIdHandler: (request: any, h: any) => void;
+  getUsersHandler: (request: any, h: any) => void;
   _service: UsersService;
   _validator: UsersValidatorInterface;
 }
@@ -21,6 +22,7 @@ class UsersHandler implements UsersHandlerInterface {
 
     this.postUserHandler = this.postUserHandler.bind(this);
     this.getUserByIdHandler = this.getUserByIdHandler.bind(this);
+    this.getUsersHandler = this.getUsersHandler.bind(this);
   }
 
   async postUserHandler(request: any, h: any) {
@@ -49,7 +51,6 @@ class UsersHandler implements UsersHandlerInterface {
       response.code(201);
       return response;
     } catch (error: any) {
-      console.log(error)
       if (error instanceof ClientError) {
         const response = h.response({
           status: 'fail',
@@ -73,6 +74,36 @@ class UsersHandler implements UsersHandlerInterface {
     try {
       const { id } = request.params;
       const user = await this._service.getUserById(id);
+      return {
+        status: 'success',
+        data: {
+          user,
+        },
+      };
+    } catch (error: any) {
+      if (error instanceof ClientError) {
+        const response = h.response({
+          status: 'fail',
+          message: error.message,
+        });
+        response.code(error.statusCode);
+        return response;
+      }
+
+      // server ERROR!
+      const response = h.response({
+        status: 'error',
+        message: 'Maaf, terjadi kegagalan pada server kami.',
+      });
+      response.code(500);
+      return response;
+    }
+  }
+
+  async getUsersHandler(request: any, h: any) {
+    try {
+      const { id } = request.params;
+      const user = await this._service.getUserList();
       return {
         status: 'success',
         data: {

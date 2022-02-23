@@ -1,4 +1,43 @@
 async function connector(){
+    const routes = [
+        {
+            from: '0',
+            to: ['1']
+        },{
+            from: '1',
+            to: ['2', '3']
+        },{
+            from: '2',
+            to: ['7']
+        },{
+            from: '4',
+            to: ['5']
+        },{
+            from: '5',
+            to: ['6','8']
+        },{
+            from: '6',
+            to: ['7', '9']
+        },{
+            from: '7',
+            to: [ '11']
+        },{
+            from: '8',
+            to: [ '9','12']
+        },{
+            from: '9',
+            to: [ '10']
+        },{
+            from: '10',
+            to: [ '11', '13']
+        },{
+            from: '11',
+            to: [ '14']
+        },{
+            from: '11',
+            to: [ '14']
+        },
+    ]
     await graph.addVertex('0', {
         '1': await weight(data.features[0].geometry["coordinates"], data.features[1].geometry["coordinates"], "0", "1"),
     });

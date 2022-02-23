@@ -11,6 +11,11 @@ const routes = (handler: UsersHandlerInterface) => [
     path: '/users/{id}',
     handler: handler.getUserByIdHandler,
   },
+  {
+    method: 'GET',
+    path: '/users',
+    handler: handler.getUsersHandler,
+  },
 ];
 
 export default routes
