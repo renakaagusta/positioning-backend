@@ -1,6 +1,6 @@
 import { string } from "joi";
 import ClientError from "../../exceptions/ClientError";
-import { PointCollectionInterface, PointInterface } from "../../model/point";
+import { PointCollectionInterface, PointInterface } from "../../model/pointCollection";
 import PointCollectionsService from "../../services/firestore/PointCollectionsService";
 import { PointCollectionValidatorInterface } from "../../validator/pointCollections";
 
@@ -11,6 +11,8 @@ export interface PointCollectionHandlerInterface {
     postPointCollectionHandler: (request: any, h: any) => void;
     getPointCollectionsHandler: (request: any, h: any) => void;
     getPointCollectionByIdHandler: (request: any, h: any) => void;
+    putPointCollectionHandler: (request: any, h: any) => void;
+    deletePointCollectionHandler: (request: any, h: any) => void;
 }
 
 class PointCollectionsHandler implements PointCollectionHandlerInterface {
@@ -23,6 +25,8 @@ class PointCollectionsHandler implements PointCollectionHandlerInterface {
         this.postPointCollectionHandler = this.postPointCollectionHandler.bind(this);
         this.getPointCollectionsHandler = this.getPointCollectionsHandler.bind(this);
         this.getPointCollectionByIdHandler = this.getPointCollectionByIdHandler.bind(this);
+        this.putPointCollectionHandler = this.putPointCollectionHandler.bind(this);
+        this.deletePointCollectionHandler = this.deletePointCollectionHandler.bind(this);
     }
 
     async postPointCollectionHandler(request: any, h: any) {
@@ -30,18 +34,18 @@ class PointCollectionsHandler implements PointCollectionHandlerInterface {
             this._validator.validatePointCollectionPayload(request.payload);
             const { type, data } = request.payload;
 
-            const poinCollection: PointCollectionInterface = {
+            const pointCollection: PointCollectionInterface = {
                 type: type as string,
                 data: data as Array<PointInterface>
             }
 
-            const poinCollectionId = await this._service.addPointCollection(poinCollection);
+            const pointCollectionId = await this._service.addPointCollection(pointCollection);
 
             const response = h.response({
                 status: 'success',
-                message: 'Laporan berhasil ditambahkan',
+                message: 'Titik berhasil di',
                 data: {
-                    poinCollectionId,
+                    pointCollectionId,
                 },
             });
             response.code(201);
@@ -67,11 +71,11 @@ class PointCollectionsHandler implements PointCollectionHandlerInterface {
     }
 
     async getPointCollectionsHandler() {
-        const poinCollections = await this._service.getPointCollectionList();
+        const pointCollections = await this._service.getPointCollectionList();
         return {
             status: 'success',
             data: {
-                poinCollections,
+                pointCollections,
             },
         };
     }
@@ -79,13 +83,92 @@ class PointCollectionsHandler implements PointCollectionHandlerInterface {
     async getPointCollectionByIdHandler(request: any, h: any) {
         try {
             const { id } = request.params;
-            const poinCollection = await this._service.getPointCollectionById(id);
+            const pointCollection = await this._service.getPointCollectionById(id);
             return {
                 status: 'success',
                 data: {
-                    poinCollection,
+                    pointCollection,
                 },
             };
+        } catch (error) {
+            if (error instanceof ClientError) {
+                const response = h.response({
+                    status: 'fail',
+                    message: error.message,
+                });
+                response.code(error.statusCode);
+                return response;
+            }
+
+            // Server ERROR!
+            const response = h.response({
+                status: 'error',
+                message: 'Maaf, terjadi kegagalan pada server kami.',
+            });
+            response.code(500);
+            return response;
+        }
+    }
+
+    async putPointCollectionHandler(request: any, h: any) {
+        try {
+            this._validator.validatePointCollectionPayload(request.payload);
+            const { id } = request.params;
+            const { type, data } = request.payload;
+
+            const pointCollection: PointCollectionInterface = {
+                id: id,
+                type: type as string,
+                data: data as Array<PointInterface>
+            }
+
+            const pointCollectionId = await this._service.updatePointCollection(pointCollection);
+
+            const response = h.response({
+                status: 'success',
+                message: 'Titik berhasil diperbarui',
+                data: {
+                    pointCollectionId,
+                },
+            });
+            response.code(201);
+            return response;
+        } catch (error) {
+            if (error instanceof ClientError) {
+                const response = h.response({
+                    status: 'fail',
+                    message: error.message,
+                });
+                response.code(error.statusCode);
+                return response;
+            }
+
+            // Server ERROR!
+            const response = h.response({
+                status: 'error',
+                message: 'Maaf, terjadi kegagalan pada server kami.',
+            });
+            response.code(500);
+            return response;
+        }
+    }
+
+    async deletePointCollectionHandler(request: any, h: any) {
+        try {
+            const { type, data } = request.payload;
+            const { id } = request.params;
+
+            const pointCollectionId = await this._service.deletePointCollection(id);
+
+            const response = h.response({
+                status: 'success',
+                message: 'Titik berhasil dihapus',
+                data: {
+                    pointCollectionId,
+                },
+            });
+            response.code(201);
+            return response;
         } catch (error) {
             if (error instanceof ClientError) {
                 const response = h.response({

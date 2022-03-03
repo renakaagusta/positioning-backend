@@ -1,7 +1,7 @@
 import InvariantError from '../../exceptions/InvariantError'
 import NotFoundError from '../../exceptions/NotFoundError'
 import * as firebase from 'firebase-admin'
-import { PointCollectionInterface } from '../../model/point'
+import { PointCollectionInterface } from '../../model/pointCollection'
 
 class PointCollectionsService {
   private _firestore: firebase.firestore.Firestore;
@@ -51,6 +51,26 @@ class PointCollectionsService {
     }))
 
     return pointCollections;
+  }
+
+  async updatePointCollection(pointCollection: PointCollectionInterface) {
+    const result = await this._firestore.collection('points').doc(pointCollection.id!).update(pointCollection)
+
+    if (!result) {
+      throw new InvariantError('Point collection gagal diperbarui');
+    }
+
+    return pointCollection.id;
+  }
+
+  async deletePointCollection(pointCollectionId: string) {
+    const result = await this._firestore.collection('points').doc(pointCollectionId).delete()
+
+    if (!result) {
+      throw new InvariantError('Point collection gagal dihapus');
+    }
+
+    return pointCollectionId;
   }
 }
 

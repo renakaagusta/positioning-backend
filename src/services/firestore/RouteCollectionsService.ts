@@ -1,7 +1,7 @@
 import InvariantError from '../../exceptions/InvariantError'
 import NotFoundError from '../../exceptions/NotFoundError'
 import * as firebase from 'firebase-admin'
-import { RouteCollectionInterface } from '../../model/route'
+import { RouteCollectionInterface } from '../../model/routeCollection'
 
 class RouteCollectionsService {
   private _firestore: firebase.firestore.Firestore;
@@ -51,6 +51,26 @@ class RouteCollectionsService {
     }))
 
     return routeCollections;
+  }
+
+  async updateRouteCollection(routeCollection: RouteCollectionInterface) {
+    const result = await this._firestore.collection('routes').doc(routeCollection.id!).update(routeCollection)
+
+    if (!result) {
+      throw new InvariantError('Route collection gagal diperbarui');
+    }
+
+    return routeCollection.id;
+  }
+
+  async deleteRouteCollection(routeCollectionId: string) {
+    const result = await this._firestore.collection('routes').doc(routeCollectionId).delete()
+
+    if (!result) {
+      throw new InvariantError('Route collection gagal dihapus');
+    }
+
+    return routeCollectionId;
   }
 }
 

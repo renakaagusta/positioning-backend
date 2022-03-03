@@ -14,6 +14,7 @@ class UsersService {
 
   async addUser(user: UserInterface) {
     await this.verifyNewUsername(user.username);
+
     const hashedPassword = await Bcrypt.hash(user.password, 10);
 
     const result = await this._firestore.collection('users').add({
@@ -28,6 +29,32 @@ class UsersService {
     return result.id;
   }
 
+
+  async updateUser(user: UserInterface) {
+    const hashedPassword = await Bcrypt.hash(user.password, 10);
+
+    const result = await this._firestore.collection('users').doc(user.id!).update({
+      ...user,
+      password: hashedPassword
+    })
+
+    if (!result) {
+      throw new InvariantError('User gagal diperbarui');
+    }
+
+    return user.id;
+  }
+
+  async deleteUser(userId: string) {
+    const result = await this._firestore.collection('users').doc(userId!).delete()
+
+    if (!result) {
+      throw new InvariantError('User gagal dihapus');
+    }
+
+    return userId;
+  }
+
   async verifyNewUsername(username: string) {
     const result = await this._firestore.collection('users').where('username', '==', username).get()
 
@@ -37,13 +64,16 @@ class UsersService {
   }
 
   async getUserById(userId: string) {
-    const result = this._firestore.collection('users').doc(userId)
+    const result = await this._firestore.collection('users').doc(userId).get()
 
     if (!result.id) {
       throw new NotFoundError('User tidak ditemukan');
     }
 
-    return result;
+    return {
+      id: result.id,
+      ...result.data()
+    };
   }
 
   async getUserList() {

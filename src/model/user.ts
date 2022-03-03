@@ -27,8 +27,8 @@ export interface UserInterface {
   google?: string;
   password: string;
   meta?: UserMetaInterface;
-  role: UserRole;
-  createdAt: Date;
+  role?: UserRole;
+  createdAt?: Date;
 }
 
 export default class User implements UserInterface {
@@ -50,8 +50,8 @@ export default class User implements UserInterface {
     this.google = user.google;
     this.password = user.password;
     this.meta = user.meta;
-    this.role = user.role;
-    this.createdAt = user.createdAt;
+    this.role = user.role ? user.role : UserRole.Rider;
+    this.createdAt = user.createdAt ? user.createdAt : new Date();
   }
 
   public toString() {

@@ -1,4 +1,3 @@
-import { firestore } from "firebase-admin";
 import { UserInterface, UserRole } from "../../model/user";
 import UsersService from '../../services/firestore/UsersService';
 import { UsersValidatorInterface } from '../../validator/users';
@@ -8,6 +7,8 @@ export interface UsersHandlerInterface {
   postUserHandler: (request: any, h: any) => void;
   getUserByIdHandler: (request: any, h: any) => void;
   getUsersHandler: (request: any, h: any) => void;
+  putUserHandler: (request: any, h: any) => void;
+  deleteUserHandler: (request: any, h: any) => void;
   _service: UsersService;
   _validator: UsersValidatorInterface;
 }
@@ -23,12 +24,14 @@ class UsersHandler implements UsersHandlerInterface {
     this.postUserHandler = this.postUserHandler.bind(this);
     this.getUserByIdHandler = this.getUserByIdHandler.bind(this);
     this.getUsersHandler = this.getUsersHandler.bind(this);
+    this.putUserHandler = this.putUserHandler.bind(this);
+    this.deleteUserHandler = this.deleteUserHandler.bind(this);
   }
 
   async postUserHandler(request: any, h: any) {
     try {
       this._validator.validateUserPayload(request.payload);
-      const { username, password, name, email, role } = request.payload;
+      const { username, password, name, email, role, latitude, longitude } = request.payload;
 
       const user: UserInterface = {
         username: username as string,
@@ -36,8 +39,20 @@ class UsersHandler implements UsersHandlerInterface {
         email: email as string,
         password: password as string,
         role: role as UserRole,
-        createdAt: new Date()
-      } 
+        createdAt: new Date(),
+        meta: {
+          location: {
+            static: {
+              latitude: latitude ? latitude as number : 0,
+              longitude: longitude ? longitude as number : 0,
+            },
+            dynamic: {
+              latitude:  0,
+              longitude: 0,
+            }
+          }
+        }
+      }
 
       const userId = await this._service.addUser(user);
 
@@ -102,12 +117,11 @@ class UsersHandler implements UsersHandlerInterface {
 
   async getUsersHandler(request: any, h: any) {
     try {
-      const { id } = request.params;
-      const user = await this._service.getUserList();
+      const users = await this._service.getUserList();
       return {
         status: 'success',
         data: {
-          user,
+          users,
         },
       };
     } catch (error: any) {
@@ -121,6 +135,100 @@ class UsersHandler implements UsersHandlerInterface {
       }
 
       // server ERROR!
+      const response = h.response({
+        status: 'error',
+        message: 'Maaf, terjadi kegagalan pada server kami.',
+      });
+      response.code(500);
+      return response;
+    }
+  }
+
+  async putUserHandler(request: any, h: any) {
+    try {
+      this._validator.validateUserPayload(request.payload);
+      const { id } = request.params;
+      const { username, password, name, email, latitude, longitude } = request.payload;
+
+      const user: UserInterface = {
+        id: id,
+        name: name as string,
+        username: username as string,
+        email: email as string,
+        password: password as string,
+        meta: {
+          location: {
+            static: {
+              latitude: latitude ? latitude as number : 0,
+              longitude: longitude ? longitude as number : 0,
+            },
+            dynamic: {
+              latitude:  0,
+              longitude: 0,
+            }
+          }
+        }
+      }
+
+      const userId = await this._service.updateUser(user);
+
+      const response = h.response({
+        status: 'success',
+        message: 'User berhasil ditambahkan',
+        data: {
+          userId,
+        },
+      });
+      response.code(201);
+      return response;
+    } catch (error: any) {
+      console.log(error)
+      if (error instanceof ClientError) {
+        const response = h.response({
+          status: 'fail',
+          message: error.message,
+        });
+        response.code(error.statusCode);
+        return response;
+      }
+
+      // Server ERROR!
+      const response = h.response({
+        status: 'error',
+        message: 'Maaf, terjadi kegagalan pada server kami.',
+      });
+      response.code(500);
+      return response;
+    }
+  }
+
+
+  async deleteUserHandler(request: any, h: any) {
+    try {
+      const { id } = request.params;
+
+      const userId = await this._service.deleteUser(id);
+
+      const response = h.response({
+        status: 'success',
+        message: 'User berhasil dihapus',
+        data: {
+          userId,
+        },
+      });
+      response.code(201);
+      return response;
+    } catch (error: any) {
+      if (error instanceof ClientError) {
+        const response = h.response({
+          status: 'fail',
+          message: error.message,
+        });
+        response.code(error.statusCode);
+        return response;
+      }
+
+      // Server ERROR!
       const response = h.response({
         status: 'error',
         message: 'Maaf, terjadi kegagalan pada server kami.',

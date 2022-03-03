@@ -7,6 +7,11 @@ const routes = (handler: UsersHandlerInterface) => [
     handler: handler.postUserHandler,
   },
   {
+    method: 'PUT',
+    path: '/users/{id}',
+    handler: handler.putUserHandler,
+  },
+  {
     method: 'GET',
     path: '/users/{id}',
     handler: handler.getUserByIdHandler,
@@ -15,6 +20,11 @@ const routes = (handler: UsersHandlerInterface) => [
     method: 'GET',
     path: '/users',
     handler: handler.getUsersHandler,
+  },
+  {
+    method: 'DELETE',
+    path: '/users/{id}',
+    handler: handler.deleteUserHandler,
   },
 ];
 
