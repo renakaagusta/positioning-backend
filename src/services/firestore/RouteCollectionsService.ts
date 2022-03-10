@@ -29,16 +29,6 @@ class RouteCollectionsService {
       throw new InvariantError('Gagal menambahkan Route Collection. Type sudah digunakan.');
     }
   }
-
-  async getRouteCollectionById(routeCollectionId: string) {
-    const result = this._firestore.collection('routes').doc(routeCollectionId)
-
-    if (!result.id) {
-      throw new NotFoundError('Route collection tidak ditemukan');
-    }
-
-    return result;
-  }
   
   async getRouteCollectionList() {
     const result = await this._firestore.collection('routes').get()
@@ -51,6 +41,19 @@ class RouteCollectionsService {
     }))
 
     return routeCollections;
+  }
+
+  async getRouteCollectionById(routeCollectionId: string) {
+    const result = await this._firestore.collection('routes').doc(routeCollectionId).get()
+
+    if (!result.id) {
+      throw new NotFoundError('Route collection tidak ditemukan');
+    }
+
+    return {
+      id: result.id,
+      ...result.data()
+    };
   }
 
   async updateRouteCollection(routeCollection: RouteCollectionInterface) {

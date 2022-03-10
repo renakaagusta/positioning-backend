@@ -15,6 +15,16 @@ const routes = (handler: PointCollectionHandlerInterface) => [{
         path: '/point-collections/{id}',
         handler: handler.getPointCollectionByIdHandler,
     },
+    {
+        method: 'PUT',
+        path: '/point-collections/{id}',
+        handler: handler.putPointCollectionHandler,
+    },
+    {
+        method: 'DELETE',
+        path: '/point-collections/{id}',
+        handler: handler.deletePointCollectionHandler,
+    },
 ];
 
 export default routes

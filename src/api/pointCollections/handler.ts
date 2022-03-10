@@ -32,7 +32,23 @@ class PointCollectionsHandler implements PointCollectionHandlerInterface {
     async postPointCollectionHandler(request: any, h: any) {
         try {
             this._validator.validatePointCollectionPayload(request.payload);
-            const { type, data } = request.payload;
+            const { type, latitudes, longitudes } = request.payload;
+
+            const data = latitudes.map((latitude: number, index: number) => ({
+                id: index,
+                    geometry: {
+                    coordinates: [
+                        longitudes[index],
+                        latitude
+                    ],
+
+                        type: 'Point',
+                },
+                poperties: {
+                    text: 'Point'
+                },
+                type: 'Features'
+            }))
 
             const pointCollection: PointCollectionInterface = {
                 type: type as string,
@@ -114,7 +130,23 @@ class PointCollectionsHandler implements PointCollectionHandlerInterface {
         try {
             this._validator.validatePointCollectionPayload(request.payload);
             const { id } = request.params;
-            const { type, data } = request.payload;
+            const { type, latitudes, longitudes } = request.payload;
+
+            const data = latitudes.map((latitude: number, index: number) => ({
+                id: index,
+                    geometry: {
+                    coordinates: [
+                        longitudes[index],
+                        latitude
+                    ],
+
+                        type: 'Point',
+                },
+                poperties: {
+                    text: 'Point'
+                },
+                type: 'Features'
+            }))
 
             const pointCollection: PointCollectionInterface = {
                 id: id,

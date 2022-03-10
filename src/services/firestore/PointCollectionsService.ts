@@ -29,16 +29,6 @@ class PointCollectionsService {
       throw new InvariantError('Gagal menambahkan Point Collection. Type sudah digunakan.');
     }
   }
-
-  async getPointCollectionById(pointCollectionId: string) {
-    const result = this._firestore.collection('points').doc(pointCollectionId)
-
-    if (!result.id) {
-      throw new NotFoundError('Point collection tidak ditemukan');
-    }
-
-    return result;
-  }
   
   async getPointCollectionList() {
     const result = await this._firestore.collection('points').get()
@@ -51,6 +41,19 @@ class PointCollectionsService {
     }))
 
     return pointCollections;
+  }
+
+  async getPointCollectionById(pointCollectionId: string) {
+    const result = await this._firestore.collection('points').doc(pointCollectionId).get()
+
+    if (!result.id) {
+      throw new NotFoundError('Point collection tidak ditemukan');
+    }
+
+    return {
+      id: result.id,
+      ...result.data()
+    };
   }
 
   async updatePointCollection(pointCollection: PointCollectionInterface) {

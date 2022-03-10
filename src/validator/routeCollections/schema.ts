@@ -7,7 +7,7 @@ const route = Joi.object({
 
 const RouteCollectionPayloadSchema = Joi.object({
     type: Joi.string().required(),
-    data: Joi.array().items(route)
+    routes: Joi.array().items(route)
 });
 
 export default RouteCollectionPayloadSchema

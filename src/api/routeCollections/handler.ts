@@ -31,26 +31,25 @@ class RouteCollectionsHandler implements RouteCollectionHandlerInterface {
     async postRouteCollectionHandler(request: any, h: any) {
         try {
             this._validator.validateRouteCollectionPayload(request.payload);
-            const { type, data } = request.payload;
+            const { type, routes } = request.payload;
 
-            const pointCollection: RouteCollectionInterface = {
+            const routeCollection: RouteCollectionInterface = {
                 type: type as string,
-                data: data as Array<RouteInterface>
+                routes: routes as Array<RouteInterface>
             }
 
-            const pointCollectionId = await this._service.addRouteCollection(pointCollection);
+            const routeCollectionId = await this._service.addRouteCollection(routeCollection);
 
             const response = h.response({
                 status: 'success',
                 message: 'Rute berhasil ditambahkan',
                 data: {
-                    pointCollectionId,
+                    routeCollectionId,
                 },
             });
             response.code(201);
             return response;
         } catch (error) {
-            console.log(error)
             if (error instanceof ClientError) {
                 const response = h.response({
                     status: 'fail',
@@ -71,11 +70,11 @@ class RouteCollectionsHandler implements RouteCollectionHandlerInterface {
     }
 
     async getRouteCollectionsHandler() {
-        const pointCollections = await this._service.getRouteCollectionList();
+        const routeCollections = await this._service.getRouteCollectionList();
         return {
             status: 'success',
             data: {
-                pointCollections,
+                routeCollections,
             },
         };
     }
@@ -83,11 +82,11 @@ class RouteCollectionsHandler implements RouteCollectionHandlerInterface {
     async getRouteCollectionByIdHandler(request: any, h: any) {
         try {
             const { id } = request.params;
-            const pointCollection = await this._service.getRouteCollectionById(id);
+            const routeCollection = await this._service.getRouteCollectionById(id);
             return {
                 status: 'success',
                 data: {
-                    pointCollection,
+                    routeCollection,
                 },
             };
         } catch (error) {
@@ -114,27 +113,26 @@ class RouteCollectionsHandler implements RouteCollectionHandlerInterface {
         try {
             this._validator.validateRouteCollectionPayload(request.payload);
             const { id } = request.payload;
-            const { type, data } = request.payload;
+            const { type, routes } = request.payload;
 
-            const pointCollection: RouteCollectionInterface = {
+            const routeCollection: RouteCollectionInterface = {
                 id: id,
                 type: type as string,
-                data: data as Array<RouteInterface>
+                routes: routes as Array<RouteInterface>
             }
 
-            const pointCollectionId = await this._service.updateRouteCollection(pointCollection);
+            const routeCollectionId = await this._service.updateRouteCollection(routeCollection);
 
             const response = h.response({
                 status: 'success',
                 message: 'Rute berhasil diperbarui',
                 data: {
-                    pointCollectionId,
+                    routeCollectionId,
                 },
             });
             response.code(201);
             return response;
         } catch (error) {
-            console.log(error)
             if (error instanceof ClientError) {
                 const response = h.response({
                     status: 'fail',
@@ -158,19 +156,18 @@ class RouteCollectionsHandler implements RouteCollectionHandlerInterface {
         try {
             const { id } = request.params;
 
-            const pointCollectionId = await this._service.deleteRouteCollection(id);
+            const routeCollectionId = await this._service.deleteRouteCollection(id);
 
             const response = h.response({
                 status: 'success',
                 message: 'Rute berhasil dihapus',
                 data: {
-                    pointCollectionId,
+                    routeCollectionId,
                 },
             });
             response.code(201);
             return response;
         } catch (error) {
-            console.log(error)
             if (error instanceof ClientError) {
                 const response = h.response({
                     status: 'fail',
