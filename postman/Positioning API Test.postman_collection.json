@@ -306,6 +306,64 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Get User By Id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('it should response 200 status code', () => {\r",
+									"    pm.expect(pm.response).to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test('response Content-Type header should have application/json value', () => {\r",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.includes('application/json');\r",
+									"}); \r",
+									"\r",
+									"pm.test('response body should an object', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"});\r",
+									"\r",
+									"pm.test('response body have correct property and value', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson.status).to.equal('success');\r",
+									"    pm.expect(responseJson.data).to.be.an('object');\r",
+									"    pm.expect(responseJson.data.songs).to.be.an('array');\r",
+									"    pm.expect(responseJson.data.songs).to.length.least(2);\r",
+									"\r",
+									"    const songs = responseJson.data.songs;\r",
+									"    songs.forEach((song) => {\r",
+									"        pm.expect(Object.keys(song)).to.length(3);\r",
+									"        pm.expect(song.id).to.be.ok;\r",
+									"        pm.expect(song.title).to.be.ok;\r",
+									"        pm.expect(song.performer).to.be.ok;\r",
+									"    });\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:{{port}}/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{port}}",
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -468,7 +526,140 @@
 							]
 						}
 					},
-					"response": []
+					"response": [
+						{
+							"name": "Add Route Collection with Valid Payload",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n                \"routes\": [\r\n                    {\r\n                        \"to\": [\r\n                            \"1\"\r\n                        ],\r\n                        \"from\": \"0\"\r\n                    },\r\n                    {\r\n                        \"to\": [\r\n                            \"2\",\r\n                            \"3\"\r\n                        ],\r\n                        \"from\": \"1\"\r\n                    },\r\n                    {\r\n                        \"to\": [\r\n                            \"7\"\r\n                        ],\r\n                        \"from\": \"2\"\r\n                    },\r\n                    {\r\n                        \"from\": \"4\",\r\n                        \"to\": [\r\n                            \"5\"\r\n                        ]\r\n                    },\r\n                    {\r\n                        \"to\": [\r\n                            \"6\",\r\n                            \"8\"\r\n                        ],\r\n                        \"from\": \"5\"\r\n                    },\r\n                    {\r\n                        \"from\": \"6\",\r\n                        \"to\": [\r\n                            \"7\",\r\n                            \"9\"\r\n                        ]\r\n                    },\r\n                    {\r\n                        \"to\": [\r\n                            \"11\"\r\n                        ],\r\n                        \"from\": \"7\"\r\n                    },\r\n                    {\r\n                        \"from\": \"8\",\r\n                        \"to\": [\r\n                            \"9\",\r\n                            \"12\"\r\n                        ]\r\n                    },\r\n                    {\r\n                        \"to\": [\r\n                            \"10\"\r\n                        ],\r\n                        \"from\": \"9\"\r\n                    },\r\n                    {\r\n                        \"to\": [\r\n                            \"11\",\r\n                            \"13\"\r\n                        ],\r\n                        \"from\": \"10\"\r\n                    },\r\n                    {\r\n                        \"to\": [\r\n                            \"14\"\r\n                        ],\r\n                        \"from\": \"11\"\r\n                    },\r\n                    {\r\n                        \"to\": [\r\n                            \"13\"\r\n                        ],\r\n                        \"from\": \"12\"\r\n                    },\r\n                    {\r\n                        \"to\": [\r\n                            \"14\"\r\n                        ],\r\n                        \"from\": \"13\"\r\n                    },\r\n                    {\r\n                        \"to\": [],\r\n                        \"from\": \"13\"\r\n                    }\r\n                ],\r\n                \"type\": \"up\"\r\n            }",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:{{port}}/route-collections",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "{{port}}",
+									"path": [
+										"route-collections"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "content-type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "vary",
+									"value": "origin"
+								},
+								{
+									"key": "access-control-expose-headers",
+									"value": "WWW-Authenticate,Server-Authorization"
+								},
+								{
+									"key": "cache-control",
+									"value": "no-cache"
+								},
+								{
+									"key": "content-length",
+									"value": "110"
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 28 Mar 2022 23:59:48 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"success\",\n    \"message\": \"Rute berhasil ditambahkan\",\n    \"data\": {\n        \"routeCollectionId\": \"sH649tT0Y5iaxEA2j6Tn\"\n    }\n}"
+						},
+						{
+							"name": "Add Route Collection with Valid Payload",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n                \"routes\": [\r\n                    {\r\n                        \"to\": [\r\n                            \"2\"\r\n                        ],\r\n                        \"from\": \"0\"\r\n                    },\r\n                    {\r\n                        \"to\": [\r\n                            \"7\"\r\n                        ],\r\n                        \"from\": \"1\"\r\n                    },\r\n                    {\r\n                        \"to\": [\r\n                            \"1\",\r\n                            \"3\"\r\n                        ],\r\n                        \"from\": \"2\"\r\n                    },\r\n                    {\r\n                        \"to\": [\r\n                            \"4\",\r\n                            \"6\"\r\n                        ],\r\n                        \"from\": \"3\"\r\n                    },\r\n                    {\r\n                        \"from\": \"4\",\r\n                        \"to\": [\r\n                            \"5\"\r\n                        ]\r\n                    },\r\n                    {\r\n                        \"to\": [\r\n                            \"6\",\r\n                            \"11\"\r\n                        ],\r\n                        \"from\": \"5\"\r\n                    },\r\n                    {\r\n                        \"from\": \"6\",\r\n                        \"to\": [\r\n                            \"7\",\r\n                            \"10\"\r\n                        ]\r\n                    },\r\n                    {\r\n                        \"to\": [\r\n                            \"8\"\r\n                        ],\r\n                        \"from\": \"7\"\r\n                    },\r\n                    {\r\n                        \"from\": \"8\",\r\n                        \"to\": [\r\n                            \"14\"\r\n                        ]\r\n                    },\r\n                    {\r\n                        \"to\": [\r\n                            \"8\"\r\n                        ],\r\n                        \"from\": \"9\"\r\n                    },\r\n                    {\r\n                        \"to\": [\r\n                            \"9\"\r\n                        ],\r\n                        \"from\": \"10\"\r\n                    },\r\n                    {\r\n                        \"to\": [\r\n                            \"10\",\r\n                            \"12\"\r\n                        ],\r\n                        \"from\": \"11\"\r\n                    },\r\n                    {\r\n                        \"to\": [\r\n                            \"13\"\r\n                        ],\r\n                        \"from\": \"12\"\r\n                    },\r\n                    {\r\n                        \"to\": [\r\n                            \"14\"\r\n                        ],\r\n                        \"from\": \"13\"\r\n                    },\r\n                    {\r\n                        \"to\": [],\r\n                        \"from\": \"14\"\r\n                    }\r\n                ],\r\n                \"type\": \"test\"\r\n            }",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:{{port}}/route-collections",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "{{port}}",
+									"path": [
+										"route-collections"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "content-type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "vary",
+									"value": "origin"
+								},
+								{
+									"key": "access-control-expose-headers",
+									"value": "WWW-Authenticate,Server-Authorization"
+								},
+								{
+									"key": "cache-control",
+									"value": "no-cache"
+								},
+								{
+									"key": "content-length",
+									"value": "87"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 29 Mar 2022 00:00:06 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"fail\",\n    \"message\": \"Gagal menambahkan Route Collection. Type sudah digunakan.\"\n}"
+						}
+					]
 				},
 				{
 					"name": "Add Route Collection with Already Taken Type",
@@ -555,6 +746,64 @@
 				},
 				{
 					"name": "Get All Route Collection",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('it should response 200 status code', () => {\r",
+									"    pm.expect(pm.response).to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test('response Content-Type header should have application/json value', () => {\r",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.includes('application/json');\r",
+									"}); \r",
+									"\r",
+									"pm.test('response body should an object', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"});\r",
+									"\r",
+									"pm.test('response body have correct property and value', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson.status).to.equal('success');\r",
+									"    pm.expect(responseJson.data).to.be.an('object');\r",
+									"    pm.expect(responseJson.data.songs).to.be.an('array');\r",
+									"    pm.expect(responseJson.data.songs).to.length.least(2);\r",
+									"\r",
+									"    const songs = responseJson.data.songs;\r",
+									"    songs.forEach((song) => {\r",
+									"        pm.expect(Object.keys(song)).to.length(3);\r",
+									"        pm.expect(song.id).to.be.ok;\r",
+									"        pm.expect(song.title).to.be.ok;\r",
+									"        pm.expect(song.performer).to.be.ok;\r",
+									"    });\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:{{port}}/route-collections",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{port}}",
+							"path": [
+								"route-collections"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Route Collection By Id",
 					"event": [
 						{
 							"listen": "test",
@@ -752,13 +1001,50 @@
 						"method": "POST",
 						"header": [],
 						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "title",
+									"value": "Traffic jam",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "traffic jam",
+									"type": "text"
+								},
+								{
+									"key": "category",
+									"value": "Traffic Jam",
+									"type": "text"
+								},
+								{
+									"key": "rider",
+									"value": "6xlyA5PYKQCUhEdlaot5",
+									"type": "text"
+								},
+								{
+									"key": "createdAt",
+									"value": "2022-10-01",
+									"type": "text"
+								},
+								{
+									"key": "startingPoint",
+									"value": "0",
+									"type": "text"
+								},
+								{
+									"key": "endPoint",
+									"value": "10",
+									"type": "text"
+								},
+								{
+									"key": "type",
+									"value": "simulation",
+									"description": "real / simulation",
+									"type": "text"
 								}
-							}
+							]
 						},
 						"url": {
 							"raw": "http://localhost:{{port}}/reports",
@@ -772,7 +1058,111 @@
 							]
 						}
 					},
-					"response": []
+					"response": [
+						{
+							"name": "Add Report with Valid Payload",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "title",
+											"value": "Traffic jam",
+											"type": "text"
+										},
+										{
+											"key": "description",
+											"value": "traffic jam",
+											"type": "text"
+										},
+										{
+											"key": "category",
+											"value": "Traffic Jam",
+											"type": "text"
+										},
+										{
+											"key": "rider",
+											"value": "6xlyA5PYKQCUhEdlaot5",
+											"type": "text"
+										},
+										{
+											"key": "createdAt",
+											"value": "2022-10-01",
+											"type": "text"
+										},
+										{
+											"key": "startingPoint",
+											"value": "0",
+											"type": "text"
+										},
+										{
+											"key": "endPoint",
+											"value": "10",
+											"type": "text"
+										},
+										{
+											"key": "type",
+											"value": "simulation",
+											"description": "real / simulation",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost:{{port}}/reports",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "{{port}}",
+									"path": [
+										"reports"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "content-type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "vary",
+									"value": "origin"
+								},
+								{
+									"key": "access-control-expose-headers",
+									"value": "WWW-Authenticate,Server-Authorization"
+								},
+								{
+									"key": "cache-control",
+									"value": "no-cache"
+								},
+								{
+									"key": "content-length",
+									"value": "104"
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 30 Mar 2022 14:43:18 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"success\",\n    \"message\": \"Laporan berhasil ditambahkan\",\n    \"data\": {\n        \"reportId\": \"TfVOR08D6kEXD6t2FEUX\"\n    }\n}"
+						}
+					]
 				},
 				{
 					"name": "Get All Report",

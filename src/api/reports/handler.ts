@@ -1,7 +1,7 @@
 import ClientError from "../../exceptions/ClientError";
 import { ReportCategory, ReportInterface, ReportStatus } from "../../model/report";
 import ReportsService from "../../services/firestore/ReportsService";
-import {ReportValidatorInterface} from "../../validator/reports";
+import { ReportValidatorInterface } from "../../validator/reports";
 
 export interface ReportHandlerInterface {
     _service: ReportsService
@@ -27,7 +27,7 @@ class ReportsHandler implements ReportHandlerInterface {
     async postReportHandler(request: any, h: any) {
         try {
             this._validator.validateReportPayload(request.payload);
-            const { title, description, rider, category } = request.payload;
+            const { title, description, rider, category, createdAt, startingPoint, endPoint, type } = request.payload;
 
             const report: ReportInterface = {
                 title: title as string,
@@ -35,10 +35,13 @@ class ReportsHandler implements ReportHandlerInterface {
                 category: category as ReportCategory,
                 rider: rider as string,
                 status: ReportStatus.Created,
-                createdAt: new Date()
+                startingPoint: startingPoint,
+                endPoint: endPoint,
+                type: type,
+                createdAt: new Date(createdAt)
             }
 
-            const reportId = await this._service.addReport(report);
+            const reportId = await new Promise(async (resolve) => await this._service.addReport(report).then((reportId: string) => resolve(reportId)))
 
             const response = h.response({
                 status: 'success',
@@ -47,8 +50,10 @@ class ReportsHandler implements ReportHandlerInterface {
                     reportId,
                 },
             });
+
             response.code(201);
-            return response;
+
+            return response
         } catch (error) {
             if (error instanceof ClientError) {
                 const response = h.response({
@@ -63,6 +68,7 @@ class ReportsHandler implements ReportHandlerInterface {
             const response = h.response({
                 status: 'error',
                 message: 'Maaf, terjadi kegagalan pada server kami.',
+                error: (error as Error).message
             });
             response.code(500);
             return response;

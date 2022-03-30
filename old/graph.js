@@ -7,7 +7,6 @@ async function connector(){
     });
     await graph.addVertex('2', {
         '1': await weight(data.features[2].geometry["coordinates"], data.features[1].geometry["coordinates"], "2", "1"),
-
         '3': await weight(data.features[2].geometry["coordinates"], data.features[3].geometry["coordinates"], "2", "3"),
     });
     await graph.addVertex('3', {

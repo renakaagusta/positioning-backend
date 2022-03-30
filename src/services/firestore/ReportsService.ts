@@ -2,31 +2,62 @@ import InvariantError from '../../exceptions/InvariantError'
 import NotFoundError from '../../exceptions/NotFoundError'
 import * as firebase from 'firebase-admin'
 import { ReportInterface } from '../../model/report'
-import { report } from 'process';
+import { connector, route_setup } from '../../helpers/routing';
+import { PointCollectionInterface } from '../../model/pointCollection';
+import { RouteCollectionInterface } from '../../model/routeCollection';
 
 class ReportsService {
   private _firestore: firebase.firestore.Firestore;
-  
+
   constructor() {
     this._firestore = firebase.firestore()
   }
 
   async addReport(report: ReportInterface) {
-    const result = await this._firestore.collection('reports').add(report)
+    const pointResult = await this._firestore.collection('points').get()
 
-    if (!result) {
-      throw new InvariantError('Report gagal ditambahkan');
-    }
+    const pointCollections: Array<PointCollectionInterface> = []
 
-    return result.id;
+    pointResult.docs.map((pointCollection) => pointCollections.push({
+      id: pointCollection.id,
+      ...pointCollection.data() as PointCollectionInterface
+    }))
+
+    const routeResult = await this._firestore.collection('routes').get()
+
+    const routeCollections: Array<RouteCollectionInterface> = []
+
+    routeResult.docs.map((routeCollection) => routeCollections.push({
+      id: routeCollection.id,
+      ...routeCollection.data() as RouteCollectionInterface
+    }))
+
+    const reportId = await new Promise<string>(async (resolve)=>{
+      await connector(routeCollections[0], report.createdAt.getTime()).then(async () => {
+
+        const routes = route_setup(report.startingPoint, report.endPoint, pointCollections[0]);
+  
+        report.routes = routes
+  
+        const result = await this._firestore.collection('reports').add(report)
+  
+        if (!result) {
+          throw new InvariantError('Report gagal ditambahkan');
+        }
+  
+        resolve(result.id)
+      })
+    })
+
+    return reportId
   }
 
   async getReports() {
     const result = await this._firestore.collection('reports').get()
 
     const reports: Array<ReportInterface> = []
-    
-    result.docs.map((report)=>reports.push({
+
+    result.docs.map((report) => reports.push({
       id: report.id,
       ...report.data() as ReportInterface
     }))

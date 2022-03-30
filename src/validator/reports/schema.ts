@@ -5,6 +5,10 @@ const ReportPayloadSchema = Joi.object({
     description: Joi.string(),
     rider: Joi.string().required(),
     category: Joi.string().required(),
+    startingPoint: Joi.number().required(),
+    endPoint: Joi.number().required(),
+    type: Joi.string().required(),
+    createdAt: Joi.string().required()
 });
 
 export default ReportPayloadSchema

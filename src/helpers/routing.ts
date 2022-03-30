@@ -1,21 +1,44 @@
-var graph = new DirectedGraph()
-var INFINITY = 1 / 0
-var x_path = []
-var totalShortestPathWeight = 0
+import { PointCollectionInterface } from "../model/pointCollection"
+import {Client, DistanceMatrixRequest} from "@googlemaps/google-maps-services-js";
+import axios from "axios";
+import { RouteCollectionInterface, RouteInterface } from "../model/routeCollection";
 
-var length,
-  density = 0
-var roadLengthVeryShort = 0,
+interface DirectedGraphInterface {
+  vertices: any,
+  addVertex: (name: string, edges: any) => void
+}
+
+class DirectedGraph implements DirectedGraphInterface {
+  vertices: any
+  addVertex: (name: string, edges?: any) => void
+
+  constructor(){
+    this.vertices = {}
+    this.addVertex = async function (name, edges) {
+      edges = edges || null
+      this.vertices[name] = edges
+    }
+  }
+}
+
+let graph = new DirectedGraph()
+let INFINITY = 1 / 0
+let x_path: Array<any> = []
+let totalShortestPathWeight = 0
+
+let length: number = 0
+let density: number = 0
+let roadLengthVeryShort = 0,
   roadLengthShort = 0,
   roadLengthModerate = 0,
   roadLengthLong = 0,
   roadLengthVeryLong = 0
-var roadDensityLow = 0,
+let roadDensityVeryLow = 0,
   roadDensityLow = 0,
   roadDensityModerate = 0,
   roadDensityDense = 0,
   roadDensityVeryDense = 0
-var a1 = 0,
+let a1 = 0,
   a2 = 0,
   a3 = 0,
   a4 = 0,
@@ -34,13 +57,13 @@ var a1 = 0,
   a17 = 0,
   a18 = 0,
   a19 = 0,
-  a20 = 0
+  a20 = 0,
   a21 = 0,
   a22 = 0,
   a23 = 0,
   a24 = 0,
   a25 = 0
-var z1 = 0,
+let z1 = 0,
   z2 = 0,
   z3 = 0,
   z4 = 0,
@@ -65,25 +88,246 @@ var z1 = 0,
   z23 = 0,
   z24 = 0,
   z25 = 0;
-var calculatedData = []
-let points = []
+let calculatedData: (number | String)[][] = []
 
-function route_setup() {
-  var startingPoint = parseInt(document.getElementById('startingPoint').value)
-  var endPoint = parseInt(document.getElementById('endPoint').value)
+var data = {
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          112.73640583197016,
+          -7.2419431033902075
+        ]
+      },
+      "properties": {
+        "text": "0"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          112.733841,
+          -7.240861
+        ]
+      },
+      "properties": {
+        "text": "1"
+      }
+    },
 
-  var out = djikstra(graph, String(startingPoint))
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          112.736169,
+          -7.241217
+        ]
+      },
+      "properties": {
+        "text": "2"
+      }
+    },
 
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          112.736104,
+          -7.240695
+        ]
+      },
+      "properties": {
+        "text": "3"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          112.737620,
+          -7.240638
+        ]
+      },
+      "properties": {
+        "text": "4"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          112.737589,
+          -7.240283
+        ]
+      },
+      "properties": {
+        "text": "5"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          112.736087,
+          -7.240198
+        ]
+      },
+      "properties": {
+        "text": "6"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          112.734029,
+          -7.239560
+        ]
+      },
+      "properties": {
+        "text": "7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          112.734176,
+          -7.238802
+        ]
+      },
+      "properties": {
+        "text": "8"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          112.735021,
+          -7.238922
+        ]
+      },
+      "properties": {
+        "text": "9"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          112.736226,
+          -7.239244
+        ]
+      },
+      "properties": {
+        "text": "10"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          112.737437,
+          -7.239257
+        ]
+      },
+      "properties": {
+        "text": "11"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          112.737431,
+          -7.238482
+        ]
+      },
+      "properties": {
+        "text": "12"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          112.735334,
+          -7.237812
+        ]
+      },
+      "properties": {
+        "text": "13"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          112.734207,
+          -7.237250
+        ]
+      },
+      "properties": {
+        "text": "14"
+      }
+    },
+  ]
+}
 
-  for (i = 0; i < data.features.length; i++) {
-    for (j = 0; j < out.shortestPaths[endPoint].length; j++) {
+export async function connector(routeCollection: RouteCollectionInterface, time: number){
+  /*const sortedRoute: RouteCollectionInterface = {
+    id: routeCollection.id,
+    routes: routeCollection.routes.sort((a:RouteInterface,b:RouteInterface)=>(parseInt(a.from) - parseInt(b.from))),
+    type: routeCollection.type
+  }*/
+  await Promise.all(routeCollection.routes.map(async (route)=>{
+    let weightOfRoute: any = {}
+    await Promise.all(route.to.map(async (to)=>{
+      await weight(data.features[parseInt(route.from)].geometry["coordinates"], data.features[parseInt(to)].geometry["coordinates"], route.from.toString(), to.toString(), time).then((result: number)=>{
+        weightOfRoute[to] = result
+
+        if(route.to != null) {
+          graph.addVertex(route.from, weightOfRoute)
+        } else {
+          graph.addVertex(route.from)
+        }
+      })
+      return 0;
+    }))
+  })) 
+}
+
+export function route_setup(startingPoint: number, endPoint: number, pointCollection: PointCollectionInterface) {
+  let out = dijkstra(graph, String(startingPoint))
+
+  let points: Array<any> = []
+
+  for (let i = 0; i < pointCollection.data.length; i++) {
+    for (let j = 0; j < out.shortestPaths[endPoint].length; j++) {
       if (String(i) == out.shortestPaths[endPoint][j]) {
-        var x_i = i
-        console.log("path")
-        console.log(data.features[x_i].geometry.coordinates[0])
+        let x_i = i
         x_path.push({
-          lat: data.features[x_i].geometry.coordinates[1],
-          lng: data.features[x_i].geometry.coordinates[0]
+          lat: pointCollection.data[x_i].geometry.coordinates[1],
+          lng: pointCollection.data[x_i].geometry.coordinates[0]
         })
 
         points.push(x_i)
@@ -91,8 +335,8 @@ function route_setup() {
     }
   }
   x_path.push({
-    lat: data.features[endPoint].geometry.coordinates[1],
-    lng: data.features[endPoint].geometry.coordinates[0]
+    lat: pointCollection.data[endPoint].geometry.coordinates[1],
+    lng: pointCollection.data[endPoint].geometry.coordinates[0]
   })
   points.forEach((point, index) => {
     if(points[index+1]) {
@@ -101,24 +345,20 @@ function route_setup() {
       }
     }
   })
+
+  console.log("x_path")
+  console.log(x_path)
+
   return x_path
 }
 
-function DirectedGraph() {
-  this.vertices = {}
-  this.addVertex = async function (name, edges) {
-    edges = edges || null
-    this.vertices[name] = edges
-  }
-}
+export function dijkstra(graph: any, startVertex: any) {
+  let dist: any = {}
+  let prev: any = {}
+  let q: any = {}
+  let shortestPaths: any  = {}
 
-function djikstra(graph, startVertex) {
-  var dist = {}
-  var prev = {}
-  var q = {}
-  var shortestPaths = {}
-
-  for (var vertex in graph.vertices) {
+  for (let vertex in graph.vertices) {
     dist[vertex] = INFINITY
     prev[vertex] = null
     q[vertex] = graph.vertices[vertex]
@@ -127,10 +367,10 @@ function djikstra(graph, startVertex) {
   dist[startVertex] = 0
 
   while (Object.keys(q).length !== 0) {
-    var smallest = findSmallest(dist, q)
-    var smallestNode = graph.vertices[smallest]
-    for (var neighbor in smallestNode) {
-      var alt = dist[smallest] + smallestNode[neighbor]
+    let smallest = findSmallest(dist, q)
+    let smallestNode = graph.vertices[smallest!]
+    for (let neighbor in smallestNode) {
+      let alt = dist[smallest!] + smallestNode[neighbor]
       if (alt < dist[neighbor]) {
         dist[neighbor] = alt
         prev[neighbor] = smallest
@@ -146,10 +386,10 @@ function djikstra(graph, startVertex) {
   }
 }
 
-function findSmallest(dist, q) {
-  var min = Infinity
-  var minNode
-  for (var node in q) {
+const findSmallest = (dist: any, q: any)=>{
+  let min = Infinity
+  let minNode: any
+  for (let node in q) {
     if (dist[node] <= min) {
       min = dist[node]
       minNode = node
@@ -160,9 +400,9 @@ function findSmallest(dist, q) {
   return minNode
 }
 
-function getShortestPaths(previous, shortestPaths, startVertex, dist) {
-  for (var node in shortestPaths) {
-    var path = shortestPaths[node]
+export function getShortestPaths(previous: any, shortestPaths: any, startVertex: any, dist: any) {
+  for (let node in shortestPaths) {
+    let path = shortestPaths[node]
 
     while (previous[node]) {
       path.push(node)
@@ -176,54 +416,58 @@ function getShortestPaths(previous, shortestPaths, startVertex, dist) {
   }
 }
 
-Number.prototype.toRad = function () {
-  return (this * Math.PI) / 180
+export const toRad = (params: number)=> {
+  return (params* Math.PI) / 180
 }
 
-async function weight(a, b, from, to) {
-  const service = new google.maps.DistanceMatrixService()
-  const request = {
-    origins: [{ lat: a[1], lng: a[0] }],
-    destinations: [{ lat: b[1], lng: b[0] }],
-    travelMode: google.maps.TravelMode.DRIVING,
-    drivingOptions: {
-      departureTime: new Date(Date.now()),
-      trafficModel: 'optimistic'
-    }
+export async function weight(a: Array<number>, b: Array<number>, from: String, to: String, time?: number) {
+  let distance = 0
+  let trafficLevel = 0
+
+  if(!time) {
+    time = new Date().getTime()
   }
-  var distance = 0
-  var trafficLevel = 0
+
+  interface DistanceMatrixResponse {
+   rows: Array<{
+     elements: Array<{
+       duration_in_traffic: {
+         value: number
+       }
+       duration: {
+        value: number
+      }
+     }>
+   }> 
+  }   
   
-  await service.getDistanceMatrix(request).then(response => {
-    var R = 6371
-    var x1 = b[1] - a[1]
-    var dLat = x1.toRad()
-    var x2 = b[0] - a[0]
-    var dLon = x2.toRad()
-    var c =
-      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(a[1].toRad()) *
-      Math.cos(b[1].toRad()) *
-      Math.sin(dLon / 2) *
-      Math.sin(dLon / 2)
-    var d = 2 * Math.atan2(Math.sqrt(c), Math.sqrt(1 - c))
-    distance = R * d * 1000
+  const result = await axios.get(`https://maps.googleapis.com/maps/api/distancematrix/json?origins=${a[1]}%2C${a[0]}&destinations=${b[1]}%2C${b[0]}&departure_time=${time}&traffic_model=optimistic&mode=driving&key=${process.env.GOOGLE_MAPS_CLIENT_SECRET}`)
+  const response = result.data as DistanceMatrixResponse
+  let R = 6371
+  let x1 = b[1] - a[1]
+  let dLat = toRad(x1)
+  let x2 = b[0] - a[0]
+  let dLon = toRad(x1)
+  let c = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(toRad(a[1])) *Math.cos(toRad(b[1])) * Math.sin(dLon / 2) * Math.sin(dLon / 2)
 
-    trafficLevel = response.rows[0].elements[0].duration_in_traffic.value > response.rows[0].elements[0].duration.value ? (response.rows[0].elements[0].duration_in_traffic.value - response.rows[0].elements[0].duration.value) / response.rows[0].elements[0].duration.value : 0
+  let d = 2 * Math.atan2(Math.sqrt(c), Math.sqrt(1 - c))
+  distance = R * d * 1000
 
-    if (trafficLevel > 1) {
-      trafficLevel = 1
-    }
+  trafficLevel = response.rows[0].elements[0].duration_in_traffic.value > response.rows[0].elements[0].duration.value ? (response.rows[0].elements[0].duration_in_traffic.value - response.rows[0].elements[0].duration.value) / response.rows[0].elements[0].duration.value : 0
 
-    length = distance;
-    density = trafficLevel
+  if (trafficLevel > 1) {
+    trafficLevel = 1
+  }
+  length = distance;
+  density = trafficLevel
 
-    fuzzyfication();
-    rules();
+  fuzzyfication();
+  rules();
 
-    calculatedData.push([from, to, response.rows[0].elements[0].duration.value, response.rows[0].elements[0].duration_in_traffic.value, distance, defuzzyfication()])
-  })
-  console.log(from+"-"+to)
+  calculatedData.push([from, to, response.rows[0].elements[0].duration.value, response.rows[0].elements[0].duration_in_traffic.value, distance, defuzzyfication()])
+  //console.log(calculatedData)
+ 
+  /*console.log(from+"-"+to)
   console.log("roadLengthVeryShort")
   console.log(roadLengthVeryShort)
   console.log("roadLengthShort")
@@ -294,7 +538,7 @@ async function weight(a, b, from, to) {
   console.log(a24)
   console.log("a25")
   console.log(a25)
-  console.log("defuzzy")
+  console.log("defuzzy")*/
   if(isNaN(defuzzyfication())) {
     return 0
   } else {
@@ -306,7 +550,7 @@ function calcRoadLengthVeryShort() {
   if (length < 50) {
     roadLengthVeryShort = 1
   } else if (length >= 50 && length < 70) {
-    roadLengthVeryShort = (70 - length) / (70 - 50)
+    roadLengthVeryShort = (80 - length) / (80 - 50)
   } else if (length >= 70) {
     roadLengthVeryShort = 0
   }
@@ -315,7 +559,7 @@ function calcRoadLengthVeryShort() {
 function calcRoadLengthShort() {
   if (length >= 50 && length < 70) { 
     roadLengthShort = (70 - length) / (70 - 50)
-  } else if (length >= 70 && length < 110) { 
+  } else if (length >= 70 && length < 120) { 
     roadLengthShort = 1
   } else if (length >= 110 && length < 130) { 
     roadLengthShort = (130 - length) / (130 - 110)

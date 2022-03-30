@@ -68,16 +68,22 @@ var z1 = 0,
 var calculatedData = []
 
 function route_setup() {
-  var starting_point = parseInt(document.getElementById('starting_point').value)
-  var end_point = parseInt(document.getElementById('end_point').value)
+  var startingPoint = parseInt(document.getElementById('startingPoint').value)
+  var endPoint = parseInt(document.getElementById('endPoint').value)
 
-  var out = djikstra(graph, String(starting_point))
+  var out = djikstra(graph, String(startingPoint))
+
+  console.log("graph")
+  console.log(graph)
+
+  console.log("shortestpath")
+  console.log(out)
 
   let points = []
 
   for (i = 0; i < data.features.length; i++) {
-    for (j = 0; j < out.shortestPaths[end_point].length; j++) {
-      if (String(i) == out.shortestPaths[end_point][j]) {
+    for (j = 0; j < out.shortestPaths[endPoint].length; j++) {
+      if (String(i) == out.shortestPaths[endPoint][j]) {
         var x_i = i
         x_path.push({
           lat: data.features[x_i].geometry.coordinates[1],
@@ -89,8 +95,8 @@ function route_setup() {
     }
   }
   x_path.push({
-    lat: data.features[end_point].geometry.coordinates[1],
-    lng: data.features[end_point].geometry.coordinates[0]
+    lat: data.features[endPoint].geometry.coordinates[1],
+    lng: data.features[endPoint].geometry.coordinates[0]
   })
   points.forEach((point, index) => {
     if(points[index+1]) {
@@ -99,6 +105,9 @@ function route_setup() {
       }
     }
   })
+
+  console.log("x_path")
+  console.log(x_path)
 
   return x_path
 }
@@ -123,6 +132,14 @@ function djikstra(graph, startVertex) {
     q[vertex] = graph.vertices[vertex]
     shortestPaths[vertex] = []
   }
+  console.log(`dist`)
+  console.log(dist)
+  console.log(`prev`)
+  console.log(prev)
+  console.log(`q`)
+  console.log(q)
+  console.log(`shortestPaths`)
+  console.log(shortestPaths)
   dist[startVertex] = 0
 
   while (Object.keys(q).length !== 0) {
@@ -222,78 +239,7 @@ async function weight(a, b, from, to) {
 
     calculatedData.push([from, to, response.rows[0].elements[0].duration.value, response.rows[0].elements[0].duration_in_traffic.value, distance, defuzzyfication()])
   })
-  console.log(from+"-"+to)
-  console.log("roadLengthVeryShort")
-  console.log(roadLengthVeryShort)
-  console.log("roadLengthShort")
-  console.log(roadLengthShort)
-  console.log("roadLengthModerate")
-  console.log(roadLengthModerate)
-  console.log("roadLengthLong")
-  console.log(roadLengthLong)
-  console.log("roadLengthVeryLong")
-  console.log(roadLengthVeryLong)
-  console.log("roadDensityVeryLow")
-  console.log(roadDensityVeryLow)
-  console.log("roadDensityShort")
-  console.log(roadDensityLow)
-  console.log("roadDensityModerate")
-  console.log(roadDensityModerate)
-  console.log("roadDensityLong")
-  console.log(roadDensityDense)
-  console.log("roadDensityVeryShort")
-  console.log(roadDensityVeryDense)
-  console.log("a1")
-  console.log(a1)
-  console.log("a2")
-  console.log(a2)
-  console.log("a3")
-  console.log(a3)
-  console.log("a4")
-  console.log(a4)
-  console.log("a5")
-  console.log(a5)
-  console.log("a6")
-  console.log(a6)
-  console.log("a7")
-  console.log(a7)
-  console.log("a8")
-  console.log(a8)
-  console.log("a9")
-  console.log(a9)
-  console.log("a10")
-  console.log(a10)
-  console.log("a11")
-  console.log(a11)
-  console.log("a12")
-  console.log(a12)
-  console.log("a13")
-  console.log(a13)
-  console.log("a14")
-  console.log(a14)
-  console.log("a15")
-  console.log(a15)
-  console.log("a16")
-  console.log(a16)
-  console.log("a17")
-  console.log(a17)
-  console.log("a18")
-  console.log(a18)
-  console.log("a19")
-  console.log(a19)
-  console.log("a20")
-  console.log(a20)
-  console.log("a21")
-  console.log(a21)
-  console.log("a22")
-  console.log(a22)
-  console.log("a23")
-  console.log(a23)
-  console.log("a24")
-  console.log(a24)
-  console.log("a25")
-  console.log(a25)
-  console.log("defuzzy")
+  
   if(isNaN(defuzzyfication())) {
     return 0
   } else {

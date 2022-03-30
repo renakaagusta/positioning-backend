@@ -73,16 +73,16 @@ var length = 0,
 var calculatedData = []
 
 function route_setup() {
-  var starting_point = parseInt(document.getElementById('starting_point').value)
-  var end_point = parseInt(document.getElementById('end_point').value)
+  var startingPoint = parseInt(document.getElementById('startingPoint').value)
+  var endPoint = parseInt(document.getElementById('endPoint').value)
 
-  var out = djikstra(graph, String(starting_point))
+  var out = djikstra(graph, String(startingPoint))
 
   let points = []
 
   for (i = 0; i < data.features.length; i++) {
-    for (j = 0; j < out.shortestPaths[end_point].length; j++) {
-      if (String(i) == out.shortestPaths[end_point][j]) {
+    for (j = 0; j < out.shortestPaths[endPoint].length; j++) {
+      if (String(i) == out.shortestPaths[endPoint][j]) {
         var x_i = i
         x_path.push({
           lat: data.features[x_i].geometry.coordinates[1],
@@ -94,8 +94,8 @@ function route_setup() {
     }
   }
   x_path.push({
-    lat: data.features[end_point].geometry.coordinates[1],
-    lng: data.features[end_point].geometry.coordinates[0]
+    lat: data.features[endPoint].geometry.coordinates[1],
+    lng: data.features[endPoint].geometry.coordinates[0]
   })
   points.forEach((point, index) => {
     if(points[index+1]) {
