@@ -10,6 +10,7 @@ export interface ReportHandlerInterface {
     postReportHandler: (request: any, h: any) => void;
     getReportsHandler: (request: any, h: any) => void;
     getReportByIdHandler: (request: any, h: any) => void;
+    getCalculatedDataHandler: (request: any, h: any) => void;
 }
 
 class ReportsHandler implements ReportHandlerInterface {
@@ -22,6 +23,7 @@ class ReportsHandler implements ReportHandlerInterface {
         this.postReportHandler = this.postReportHandler.bind(this);
         this.getReportsHandler = this.getReportsHandler.bind(this);
         this.getReportByIdHandler = this.getReportByIdHandler.bind(this);
+        this.getCalculatedDataHandler = this.getCalculatedDataHandler.bind(this);
     }
 
     async postReportHandler(request: any, h: any) {
@@ -93,6 +95,35 @@ class ReportsHandler implements ReportHandlerInterface {
                 status: 'success',
                 data: {
                     report,
+                },
+            };
+        } catch (error) {
+            if (error instanceof ClientError) {
+                const response = h.response({
+                    status: 'fail',
+                    message: error.message,
+                });
+                response.code(error.statusCode);
+                return response;
+            }
+
+            // Server ERROR!
+            const response = h.response({
+                status: 'error',
+                message: 'Maaf, terjadi kegagalan pada server kami.',
+            });
+            response.code(500);
+            return response;
+        }
+    }
+
+    async getCalculatedDataHandler(request: any, h: any) {
+        try {
+            const calculatedData = await this._service.getCalculatedData();
+            return {
+                status: 'success',
+                data: {
+                    calculatedData,
                 },
             };
         } catch (error) {

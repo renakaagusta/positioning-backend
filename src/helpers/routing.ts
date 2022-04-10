@@ -88,7 +88,7 @@ let z1 = 0,
   z23 = 0,
   z24 = 0,
   z25 = 0;
-let calculatedData: (number | String)[][] = []
+export let calculatedData: (number | String)[][] = []
 
 var data = {
   "type": "FeatureCollection",
@@ -119,7 +119,6 @@ var data = {
         "text": "1"
       }
     },
-
     {
       "type": "Feature",
       "geometry": {
@@ -294,6 +293,8 @@ var data = {
 }
 
 export async function connector(routeCollection: RouteCollectionInterface, time: number){
+  x_path = []
+  graph = new DirectedGraph()
   /*const sortedRoute: RouteCollectionInterface = {
     id: routeCollection.id,
     routes: routeCollection.routes.sort((a:RouteInterface,b:RouteInterface)=>(parseInt(a.from) - parseInt(b.from))),
@@ -314,6 +315,8 @@ export async function connector(routeCollection: RouteCollectionInterface, time:
       return 0;
     }))
   })) 
+
+  return calculatedData
 }
 
 export function route_setup(startingPoint: number, endPoint: number, pointCollection: PointCollectionInterface) {
@@ -447,7 +450,7 @@ export async function weight(a: Array<number>, b: Array<number>, from: String, t
   let x1 = b[1] - a[1]
   let dLat = toRad(x1)
   let x2 = b[0] - a[0]
-  let dLon = toRad(x1)
+  let dLon = toRad(x2)
   let c = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(toRad(a[1])) *Math.cos(toRad(b[1])) * Math.sin(dLon / 2) * Math.sin(dLon / 2)
 
   let d = 2 * Math.atan2(Math.sqrt(c), Math.sqrt(1 - c))

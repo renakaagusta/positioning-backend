@@ -2,7 +2,7 @@ import InvariantError from '../../exceptions/InvariantError'
 import NotFoundError from '../../exceptions/NotFoundError'
 import * as firebase from 'firebase-admin'
 import { ReportInterface } from '../../model/report'
-import { connector, route_setup } from '../../helpers/routing';
+import { calculatedData, connector, route_setup } from '../../helpers/routing';
 import { PointCollectionInterface } from '../../model/pointCollection';
 import { RouteCollectionInterface } from '../../model/routeCollection';
 
@@ -78,6 +78,33 @@ class ReportsService {
     }
 
     return report;
+  }
+
+  async getCalculatedData() {
+    
+    const pointResult = await this._firestore.collection('points').get()
+
+    const pointCollections: Array<PointCollectionInterface> = []
+
+    pointResult.docs.map((pointCollection) => pointCollections.push({
+      id: pointCollection.id,
+      ...pointCollection.data() as PointCollectionInterface
+    }))
+
+    const routeResult = await this._firestore.collection('routes').get()
+
+    const routeCollections: Array<RouteCollectionInterface> = []
+
+    routeResult.docs.map((routeCollection) => routeCollections.push({
+      id: routeCollection.id,
+      ...routeCollection.data() as RouteCollectionInterface
+    }))
+
+    const calculatedData = await new Promise<(number | String)[][]>(async (resolve)=>{ 
+      await connector(routeCollections[0], new Date().getTime()).then(async (calculatedData) => resolve(calculatedData))
+    })
+
+    return calculatedData
   }
 }
 

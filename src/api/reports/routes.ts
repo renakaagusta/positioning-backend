@@ -15,6 +15,11 @@ const routes = (handler: ReportHandlerInterface) => [{
         path: '/reports/{id}',
         handler: handler.getReportByIdHandler,
     },
+    {
+        method: 'GET',
+        path: '/reports/calculated-data',
+        handler: handler.getCalculatedDataHandler,
+    },
 ];
 
 export default routes
