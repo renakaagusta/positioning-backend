@@ -31,7 +31,7 @@ class UsersHandler implements UsersHandlerInterface {
   async postUserHandler(request: any, h: any) {
     try {
       this._validator.validateUserPayload(request.payload);
-      const { username, password, name, email, role, latitude, longitude } = request.payload;
+      const { username, password, name, email, role, latitude, longitude, phoneNumber } = request.payload;
 
       const user: UserInterface = {
         username: username as string,
@@ -41,6 +41,7 @@ class UsersHandler implements UsersHandlerInterface {
         role: role as UserRole,
         createdAt: new Date(),
         meta: {
+          phoneNumber: phoneNumber,
           location: {
             static: {
               latitude: latitude ? latitude as number : 0,
@@ -148,7 +149,7 @@ class UsersHandler implements UsersHandlerInterface {
     try {
       this._validator.validateUserPayload(request.payload);
       const { id } = request.params;
-      const { username, password, name, email, latitude, longitude } = request.payload;
+      const { username, password, name, email, latitude, longitude, phoneNumber } = request.payload;
 
       const user: UserInterface = {
         id: id,
@@ -157,6 +158,7 @@ class UsersHandler implements UsersHandlerInterface {
         email: email as string,
         password: password as string,
         meta: {
+          phoneNumber: phoneNumber,
           location: {
             static: {
               latitude: latitude ? latitude as number : 0,

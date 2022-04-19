@@ -7,7 +7,8 @@ const UserPayloadSchema = Joi.object({
   email: Joi.string().required(),
   role: Joi.string(),
   latitude: Joi.string(),
-  longitude: Joi.string()
+  longitude: Joi.string(),
+  phoneNumber: Joi.string()
 });
 
 export default UserPayloadSchema

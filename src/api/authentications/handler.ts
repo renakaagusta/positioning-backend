@@ -1,9 +1,8 @@
+import ClientError from "../../exceptions/ClientError";
 import AuthenticationsService from "../../services/firestore/AuthenticationsService";
 import UsersService from "../../services/firestore/UsersService";
 import { TokenManagerInterface } from "../../tokenize/TokenManager";
 import { AuthenticationsValidatorInterface } from "../../validator/authentications";
-
-const ClientError = require('../../exceptions/ClientError');
 
 export interface AuthenticationsHandlerInterface {
   postAuthenticationHandler: (request: any, h: any) => void;
@@ -44,17 +43,21 @@ class AuthenticationsHandler implements AuthenticationsHandlerInterface {
 
       await this._authenticationsService.addRefreshToken(refreshToken);
 
+      console.log(id);
+
       const response = h.response({
         status: 'success',
         message: 'Authentication berhasil ditambahkan',
         data: {
           accessToken,
           refreshToken,
+          userId: id
         },
       });
       response.code(201);
       return response;
     } catch (error: any) {
+      console.log(error)
       if (error instanceof ClientError) {
         const response = h.response({
           status: 'fail',

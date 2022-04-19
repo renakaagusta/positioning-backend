@@ -14,6 +14,7 @@ class UsersService {
 
   async addUser(user: UserInterface) {
     await this.verifyNewUsername(user.username);
+    console.log(user)
 
     const hashedPassword = await Bcrypt.hash(user.password, 10);
 
@@ -28,7 +29,6 @@ class UsersService {
 
     return result.id;
   }
-
 
   async updateUser(user: UserInterface) {
     const hashedPassword = await Bcrypt.hash(user.password, 10);
@@ -92,11 +92,11 @@ class UsersService {
   async verifyUserCredential(username: string, password: string) {
     const result = await this._firestore.collection('users').where('username', '==', username).get()
 
-    if (!result) {
+    if (result.docs.length == 0) {
       throw new AuthenticationError('Kredensial yang Anda berikan salah');
     }
 
-    const { id, password: hashedPassword } = result.docs[0].data();
+    const { password: hashedPassword } = result.docs[0].data();
 
     const match = await Bcrypt.compare(password, hashedPassword);
 
@@ -104,7 +104,7 @@ class UsersService {
       throw new AuthenticationError('Kredensial yang Anda berikan salah');
     }
 
-    return id;
+    return result.docs[0].id;
   }
 }
 
