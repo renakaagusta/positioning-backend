@@ -43,8 +43,6 @@ class AuthenticationsHandler implements AuthenticationsHandlerInterface {
 
       await this._authenticationsService.addRefreshToken(refreshToken);
 
-      console.log(id);
-
       const response = h.response({
         status: 'success',
         message: 'Authentication berhasil ditambahkan',
@@ -57,7 +55,6 @@ class AuthenticationsHandler implements AuthenticationsHandlerInterface {
       response.code(201);
       return response;
     } catch (error: any) {
-      console.log(error)
       if (error instanceof ClientError) {
         const response = h.response({
           status: 'fail',

@@ -27,15 +27,16 @@ class ReportsHandler implements ReportHandlerInterface {
     }
 
     async postReportHandler(request: any, h: any) {
-        try {
+        try {           
             this._validator.validateReportPayload(request.payload);
-            const { title, description, rider, category, createdAt, startingPoint, endPoint, type } = request.payload;
+            const { title, description, rider, handler = null, category, createdAt, startingPoint, endPoint, type } = request.payload;
 
             const report: ReportInterface = {
                 title: title as string,
                 description: description as string,
                 category: category as ReportCategory,
                 rider: rider as string,
+                handler: handler as string,
                 status: ReportStatus.Created,
                 startingPoint: startingPoint,
                 endPoint: endPoint,
@@ -57,6 +58,7 @@ class ReportsHandler implements ReportHandlerInterface {
 
             return response
         } catch (error) {
+            console.log(error)
             if (error instanceof ClientError) {
                 const response = h.response({
                     status: 'fail',

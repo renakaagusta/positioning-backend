@@ -41,7 +41,7 @@ class UsersHandler implements UsersHandlerInterface {
         role: role as UserRole,
         createdAt: new Date(),
         meta: {
-          phoneNumber: phoneNumber,
+          phoneNumber: phoneNumber ?? null,
           location: {
             static: {
               latitude: latitude ? latitude as number : 0,
@@ -67,6 +67,7 @@ class UsersHandler implements UsersHandlerInterface {
       response.code(201);
       return response;
     } catch (error: any) {
+      console.log(error)
       if (error instanceof ClientError) {
         const response = h.response({
           status: 'fail',
