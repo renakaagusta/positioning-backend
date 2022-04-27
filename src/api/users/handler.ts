@@ -32,7 +32,7 @@ class UsersHandler implements UsersHandlerInterface {
     try {
       this._validator.validateUserPayload(request.payload);
       const { username, password, name, email, role, latitude, longitude, phoneNumber } = request.payload;
-
+      console.log(request.payload)
       const user: UserInterface = {
         username: username as string,
         name: name as string,
@@ -159,7 +159,7 @@ class UsersHandler implements UsersHandlerInterface {
         email: email as string,
         password: password as string,
         meta: {
-          phoneNumber: phoneNumber,
+          phoneNumber: phoneNumber ?? null,
           location: {
             static: {
               latitude: latitude ? latitude as number : 0,

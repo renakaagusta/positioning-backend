@@ -55,6 +55,7 @@ class AuthenticationsHandler implements AuthenticationsHandlerInterface {
       response.code(201);
       return response;
     } catch (error: any) {
+      console.log(error)
       if (error instanceof ClientError) {
         const response = h.response({
           status: 'fail',

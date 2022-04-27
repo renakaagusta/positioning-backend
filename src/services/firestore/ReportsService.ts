@@ -1,9 +1,9 @@
-import InvariantError from '../../exceptions/InvariantError'
-import NotFoundError from '../../exceptions/NotFoundError'
-import * as firebase from 'firebase-admin'
-import { ReportInterface } from '../../model/report'
-import { calculatedData, connector, route_setup } from '../../helpers/routing';
+import * as firebase from 'firebase-admin';
+import InvariantError from '../../exceptions/InvariantError';
+import NotFoundError from '../../exceptions/NotFoundError';
+import { connector, route_setup } from '../../helpers/routing';
 import { PointCollectionInterface } from '../../model/pointCollection';
+import { ReportInterface } from '../../model/report';
 import { RouteCollectionInterface } from '../../model/routeCollection';
 
 class ReportsService {
