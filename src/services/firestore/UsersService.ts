@@ -33,11 +33,6 @@ class UsersService {
   async updateUser(user: UserInterface) {
     const hashedPassword = await Bcrypt.hash(user.password, 10);
 
-    console.log("user")
-    console.log(user)
-    console.log("hased")
-    console.log(hashedPassword)
-
     const result = await this._firestore.collection('users').doc(user.id!).update({
       ...user,
       password: hashedPassword

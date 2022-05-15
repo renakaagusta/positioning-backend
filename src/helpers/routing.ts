@@ -327,20 +327,19 @@ export function route_setup(startingPoint: number, endPoint: number, pointCollec
   for (let i = 0; i < pointCollection.data.length; i++) {
     for (let j = 0; j < out.shortestPaths[endPoint].length; j++) {
       if (String(i) == out.shortestPaths[endPoint][j]) {
-        let x_i = i
-        x_path.push({
-          lat: pointCollection.data[x_i].geometry.coordinates[1],
-          lng: pointCollection.data[x_i].geometry.coordinates[0]
-        })
-
-        points.push(x_i)
       }
     }
   }
-  x_path.push({
-    lat: pointCollection.data[endPoint].geometry.coordinates[1],
-    lng: pointCollection.data[endPoint].geometry.coordinates[0]
+
+  out.shortestPaths[endPoint].map((index: number)=>{
+    points.push(index)
+
+    x_path.push({
+      lat: data.features[index].geometry.coordinates[1],
+      lng: data.features[index].geometry.coordinates[0]
+    })
   })
+
   points.forEach((point, index) => {
     if(points[index+1]) {
       if (graph.vertices[point][(points[index + 1])] && points[index+1]) {
