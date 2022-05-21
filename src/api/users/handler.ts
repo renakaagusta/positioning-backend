@@ -52,7 +52,8 @@ class UsersHandler implements UsersHandlerInterface {
               longitude: 0,
             }
           }
-        }
+        },
+        fcmToken: ""
       }
 
       const userId = await this._service.addUser(user);
@@ -150,7 +151,7 @@ class UsersHandler implements UsersHandlerInterface {
     try {
       this._validator.validateUserPayload(request.payload);
       const { id } = request.params;
-      const { username, password, name, email, latitude, longitude, phoneNumber } = request.payload;
+      const { username, password, name, email, latitude, longitude, phoneNumber, fcmToken } = request.payload;
 
       const user: UserInterface = {
         id: id,
@@ -170,7 +171,8 @@ class UsersHandler implements UsersHandlerInterface {
               longitude: 0,
             }
           }
-        }
+        },
+        fcmToken: fcmToken ?? ''
       }
 
       const userId = await this._service.updateUser(user);
