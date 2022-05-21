@@ -4,6 +4,9 @@
   "main": "lib/main.js",
   "license": "MIT",
   "scripts": {
+    "start": "node dist/server.js",
+    "postinstall": "tsc",
+    "build": "tsc",
     "dev:tsc": "tsc --watch -p .",
     "dev:serve": "nodemon -e js -w lib lib/main.js",
     "dev": "run-p dev:*"
