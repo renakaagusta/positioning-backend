@@ -142,6 +142,16 @@ class ReportsService {
 
     return reportId
   }
+
+  async deleteReport(reportId: string) {
+    const result = await this._firestore.collection('reports').doc(reportId).delete()
+
+    if (!result) {
+      throw new NotFoundError('Report tidak ditemukan');
+    }
+
+    return reportId;
+  }
 }
 
 export default ReportsService

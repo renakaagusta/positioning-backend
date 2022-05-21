@@ -12,6 +12,7 @@ export interface ReportHandlerInterface {
     getReportsHandler: (request: any, h: any) => void;
     getReportByIdHandler: (request: any, h: any) => void;
     getCalculatedDataHandler: (request: any, h: any) => void;
+    deleteReportHandler: (request: any, h: any) => void;
 }
 
 class ReportsHandler implements ReportHandlerInterface {
@@ -26,6 +27,7 @@ class ReportsHandler implements ReportHandlerInterface {
         this.getReportsHandler = this.getReportsHandler.bind(this);
         this.getReportByIdHandler = this.getReportByIdHandler.bind(this);
         this.getCalculatedDataHandler = this.getCalculatedDataHandler.bind(this);
+        this.deleteReportHandler = this.deleteReportHandler.bind(this);
     }
 
     async postReportHandler(request: any, h: any) {
@@ -185,6 +187,36 @@ class ReportsHandler implements ReportHandlerInterface {
                 status: 'success',
                 data: {
                     calculatedData,
+                },
+            };
+        } catch (error) {
+            if (error instanceof ClientError) {
+                const response = h.response({
+                    status: 'fail',
+                    message: error.message,
+                });
+                response.code(error.statusCode);
+                return response;
+            }
+
+            // Server ERROR!
+            const response = h.response({
+                status: 'error',
+                message: 'Maaf, terjadi kegagalan pada server kami.',
+            });
+            response.code(500);
+            return response;
+        }
+    }
+
+    async deleteReportHandler(request: any, h: any) {
+        try {
+            const { id } = request.params;
+            const report = await this._service.deleteReport(id)
+            return {
+                status: 'success',
+                data: {
+                    report,
                 },
             };
         } catch (error) {

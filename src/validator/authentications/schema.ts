@@ -3,6 +3,7 @@ import Joi from 'joi'
 export const PostAuthenticationPayloadSchema = Joi.object({
   username: Joi.string().required(),
   password: Joi.string().required(),
+  fcmToken: Joi.string()
 });
 
 export const PutAuthenticationPayloadSchema = Joi.object({

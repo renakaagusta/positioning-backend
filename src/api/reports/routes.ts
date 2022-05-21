@@ -20,6 +20,11 @@ const routes = (handler: ReportHandlerInterface) => [{
         path: '/reports/calculated-data',
         handler: handler.getCalculatedDataHandler,
     },
+    {
+        method: 'DELETE',
+        path: '/reports/{id}',
+        handler: handler.deleteReportHandler
+    },
 ];
 
 export default routes

@@ -1,4 +1,5 @@
 import ClientError from "../../exceptions/ClientError";
+import { UserInterface } from "../../model/user";
 import AuthenticationsService from "../../services/firestore/AuthenticationsService";
 import UsersService from "../../services/firestore/UsersService";
 import { TokenManagerInterface } from "../../tokenize/TokenManager";
@@ -19,13 +20,13 @@ class AuthenticationsHandler implements AuthenticationsHandlerInterface {
   _usersService: UsersService;
   _tokenManager: TokenManagerInterface;
   _validator: AuthenticationsValidatorInterface;
-  
+
   constructor(authenticationsService: AuthenticationsService, usersService: UsersService, tokenManager: TokenManagerInterface, validator: AuthenticationsValidatorInterface) {
     this._authenticationsService = authenticationsService;
     this._usersService = usersService;
     this._tokenManager = tokenManager;
     this._validator = validator;
-    
+
     this.postAuthenticationHandler = this.postAuthenticationHandler.bind(this);
     this.putAuthenticationHandler = this.putAuthenticationHandler.bind(this);
     this.deleteAuthenticationHandler = this.deleteAuthenticationHandler.bind(this);
@@ -35,8 +36,13 @@ class AuthenticationsHandler implements AuthenticationsHandlerInterface {
     try {
       this._validator.validatePostAuthenticationPayload(request.payload);
 
-      const { username, password } = request.payload;
+      const { username, password, fcmToken } = request.payload;
       const id = await this._usersService.verifyUserCredential(username, password);
+
+      if (fcmToken) {
+        const user: UserInterface = await this._usersService.getUserById(id);
+        await this._usersService.updateUserFCMToken(user, fcmToken);
+      }
 
       const accessToken = this._tokenManager.generateAccessToken({ id });
       const refreshToken = this._tokenManager.generateRefreshToken({ id });

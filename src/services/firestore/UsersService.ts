@@ -73,7 +73,7 @@ class UsersService {
     return {
       id: result.id,
       ...result.data()
-    };
+    } as UserInterface;
   }
 
   async getUserList() {
@@ -104,6 +104,15 @@ class UsersService {
     }
 
     return result.docs[0].id;
+  }
+
+  async updateUserFCMToken(user: UserInterface, fcmToken: string) {
+    const result = await this._firestore.collection('users').doc(user.id!).update({
+      ...user,
+      fcmToken: fcmToken
+    }) 
+
+    return result;
   }
 }
 

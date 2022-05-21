@@ -30,6 +30,7 @@ export interface UserInterface {
   password: string;
   meta?: UserMetaInterface;
   role?: UserRole;
+  fcmToken: string;
   createdAt?: Date;
 }
 
@@ -43,6 +44,7 @@ export default class User implements UserInterface {
   public meta?: UserMetaInterface
   public role: UserRole;
   public createdAt: Date;
+  public fcmToken: string;
 
   constructor(user: UserInterface) {
     this.id = user.id;
@@ -54,6 +56,7 @@ export default class User implements UserInterface {
     this.meta = user.meta;
     this.role = user.role ? user.role : UserRole.Rider;
     this.createdAt = user.createdAt ? user.createdAt : new Date();
+    this.fcmToken = user.fcmToken;
   }
 
   public toString() {
