@@ -37,8 +37,6 @@ export const init = async function(): Promise<Server> {
     const reportsService = new ReportsService()
     const routeCollectionsService = new RouteCollectionsService()
     const usersService = new UsersService()
-
-    console.log("1")
     
     server = Hapi.server({
         port: process.env.PORT,
@@ -49,12 +47,10 @@ export const init = async function(): Promise<Server> {
             },
         },
     });
-    console.log("2")
 
     await server.register([{
         plugin: Jwt as any,
     },])
-    console.log("3")
 
     server.auth.strategy('positioningapp_jwt', 'jwt', {
         keys: process.env.ACCESS_TOKEN_KEY,
@@ -111,9 +107,6 @@ export const init = async function(): Promise<Server> {
             },
         },
     ]);
-
-    
-    console.log("4")
 
     return server;
 };
