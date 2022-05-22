@@ -105,7 +105,7 @@ class ReportsHandler implements ReportHandlerInterface {
             }
             const oldReport = await this._service.getReportById(id);
 
-            const reportId = await new Promise(async (resolve) => await this._service.updateReport(newReport, oldReport, status).then((reportId: string) => resolve(reportId)))
+            const reportId = await new Promise(async (resolve) => await this._service.updateReport(newReport, oldReport, status).then((reportId) => resolve(reportId)))
 
             const response = h.response({
                 status: 'success',

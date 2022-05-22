@@ -113,6 +113,10 @@ class ReportsService {
       ...routeCollection.data() as RouteCollectionInterface
     }))
 
+    console.log(newReport);
+    console.log(oldReport);
+    console.log(status);
+    //return oldReport.id;
     const reportId = await new Promise<string>(async (resolve)=>{
       await connector(routeCollections[0], newReport.createdAt.getTime()).then(async () => {
         const routes = route_setup(newReport.startingPoint, newReport.endPoint, pointCollections[0]);

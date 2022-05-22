@@ -9,7 +9,8 @@ const ReportPayloadSchema = Joi.object({
     startingPoint: Joi.number().required(),
     endPoint: Joi.number().required(),
     type: Joi.string().required(),
-    createdAt: Joi.string().required()
+    createdAt: Joi.string().required(),
+    status: Joi.string()
 });
 
 export default ReportPayloadSchema

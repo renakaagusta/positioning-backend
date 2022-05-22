@@ -19,7 +19,11 @@ const routes = (handler: ReportHandlerInterface) => [{
         method: 'GET',
         path: '/reports/calculated-data',
         handler: handler.getCalculatedDataHandler,
-    },
+    }, {
+    method: 'POST',
+    path: '/reports/{id}',
+    handler: handler.putReportHandler,
+},
     {
         method: 'DELETE',
         path: '/reports/{id}',
