@@ -289,6 +289,19 @@ var data = {
         "text": "14"
       }
     },
+    {
+      "geometry": {
+          "type": "Point",
+          "coordinates": [
+              112.735137,
+              -7.23850
+          ]
+      },
+      "type": "Feature",
+      "properties": {
+          "text": "15"
+      }
+  }
   ]
 }
 
