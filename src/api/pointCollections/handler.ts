@@ -32,14 +32,16 @@ class PointCollectionsHandler implements PointCollectionHandlerInterface {
     async postPointCollectionHandler(request: any, h: any) {
         try {
             this._validator.validatePointCollectionPayload(request.payload);
-            const { type, latitudes, longitudes } = request.payload;
+            const { type, data } = request.payload;
 
-            const data = latitudes.map((latitude: number, index: number) => ({
+            console.log(data)
+
+            const result = data.map((latitude: number, index: number) => ({
                 id: index,
                     geometry: {
                     coordinates: [
-                        longitudes[index],
-                        latitude
+                        data[index].geometry.coordinates[0],
+                        data[index].geometry.coordinates[1],
                     ],
 
                         type: 'Point',
@@ -67,6 +69,7 @@ class PointCollectionsHandler implements PointCollectionHandlerInterface {
             response.code(201);
             return response;
         } catch (error) {
+            console.log(error)
             if (error instanceof ClientError) {
                 const response = h.response({
                     status: 'fail',
