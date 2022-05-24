@@ -190,7 +190,6 @@ class ReportsHandler implements ReportHandlerInterface {
                 },
             };
         } catch (error) {
-            console.log(error)
             if (error instanceof ClientError) {
                 const response = h.response({
                     status: 'fail',

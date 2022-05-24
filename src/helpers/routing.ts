@@ -95,206 +95,206 @@ var data = {
   "features": [
     {
       "type": "Feature",
+      "properties": {
+          "text": "0"
+      },
       "geometry": {
-        "type": "Point",
-        "coordinates": [
-          112.73640583197016,
-          -7.2419431033902075
-        ]
+          "coordinates": [
+              112.73640583197016,
+              -7.2419431033902075
+          ],
+          "type": "Point"
+      }
+  },
+  {
+      "geometry": {
+          "type": "Point",
+          "coordinates": [
+              112.736169,
+              -7.241217
+          ]
       },
       "properties": {
-        "text": "0"
-      }
-    },
-    {
+          "text": "1"
+      },
+      "type": "Feature"
+  },
+  {
+      "properties": {
+          "text": "2"
+      },
       "type": "Feature",
       "geometry": {
-        "type": "Point",
-        "coordinates": [
-          112.733841,
-          -7.240861
-        ]
-      },
-      "properties": {
-        "text": "1"
+          "type": "Point",
+          "coordinates": [
+              112.733841,
+              -7.240861
+          ]
       }
-    },
-    {
+  },
+  {
+      "properties": {
+          "text": "3"
+      },
       "type": "Feature",
       "geometry": {
-        "type": "Point",
-        "coordinates": [
-          112.736169,
-          -7.241217
-        ]
+          "type": "Point",
+          "coordinates": [
+              112.736104,
+              -7.240695
+          ]
+      }
+  },
+  {
+      "type": "Feature",
+      "properties": {
+          "text": "4"
+      },
+      "geometry": {
+          "coordinates": [
+              112.73762,
+              -7.240638
+          ],
+          "type": "Point"
+      }
+  },
+  {
+      "properties": {
+          "text": "5"
+      },
+      "geometry": {
+          "type": "Point",
+          "coordinates": [
+              112.737589,
+              -7.240283
+          ]
+      },
+      "type": "Feature"
+  },
+  {
+      "type": "Feature",
+      "geometry": {
+          "coordinates": [
+              112.736087,
+              -7.240198
+          ],
+          "type": "Point"
       },
       "properties": {
-        "text": "2"
+          "text": "6"
       }
-    },
+  },
+  {
+      "geometry": {
+          "type": "Point",
+          "coordinates": [
+              112.734029,
+              -7.23956
+          ]
+      },
+      "type": "Feature",
+      "properties": {
+          "text": "7"
+      }
+  },
+  {
+      "geometry": {
+          "type": "Point",
+          "coordinates": [
+              112.737437,
+              -7.239257
+          ]
+      },
+      "type": "Feature",
+      "properties": {
+          "text": "8"
+      }
+  },
+  {
+      "properties": {
+          "text": "9"
+      },
+      "type": "Feature",
+      "geometry": {
+          "type": "Point",
+          "coordinates": [
+              112.736226,
+              -7.239244
+          ]
+      }
+  },
+  {
+      "type": "Feature",
+      "properties": {
+          "text": "10"
+      },
+      "geometry": {
+          "coordinates": [
+              112.735021,
+              -7.238922
+          ],
+          "type": "Point"
+      }
+  },
+  {
+      "properties": {
+          "text": "11"
+      },
+      "geometry": {
+          "type": "Point",
+          "coordinates": [
+              112.734176,
+              -7.238802
+          ]
+      },
+      "type": "Feature"
+  },
 
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          112.736104,
-          -7.240695
-        ]
-      },
-      "properties": {
-        "text": "3"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          112.737620,
-          -7.240638
-        ]
-      },
-      "properties": {
-        "text": "4"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          112.737589,
-          -7.240283
-        ]
-      },
-      "properties": {
-        "text": "5"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          112.736087,
-          -7.240198
-        ]
-      },
-      "properties": {
-        "text": "6"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          112.734029,
-          -7.239560
-        ]
-      },
-      "properties": {
-        "text": "7"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          112.734176,
-          -7.238802
-        ]
-      },
-      "properties": {
-        "text": "8"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          112.735021,
-          -7.238922
-        ]
-      },
-      "properties": {
-        "text": "9"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          112.736226,
-          -7.239244
-        ]
-      },
-      "properties": {
-        "text": "10"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          112.737437,
-          -7.239257
-        ]
-      },
-      "properties": {
-        "text": "11"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          112.737431,
-          -7.238482
-        ]
-      },
-      "properties": {
-        "text": "12"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          112.735334,
-          -7.237812
-        ]
-      },
-      "properties": {
-        "text": "13"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          112.734207,
-          -7.237250
-        ]
-      },
-      "properties": {
-        "text": "14"
-      }
-    },
-    {
+  {
       "geometry": {
           "type": "Point",
           "coordinates": [
               112.735137,
               -7.23850
+          ]
+      },
+      "type": "Feature",
+      "properties": {
+          "text": "12"
+      }
+  },
+  {
+      "type": "Feature",
+      "properties": {
+          "text": "13"
+      },
+      "geometry": {
+          "type": "Point",
+          "coordinates": [
+              112.737431,
+              -7.238482
+          ]
+      }
+  },
+  {
+      "properties": {
+          "text": "14"
+      },
+      "type": "Feature",
+      "geometry": {
+          "coordinates": [
+              112.735334,
+              -7.237812
+          ],
+          "type": "Point"
+      }
+  },
+  {
+      "geometry": {
+          "type": "Point",
+          "coordinates": [
+              112.734207,
+              -7.23725
           ]
       },
       "type": "Feature",
@@ -307,19 +307,16 @@ var data = {
 
 export async function connector(routeCollection: RouteCollectionInterface, time: number){
   x_path = []
-  graph = new DirectedGraph()
-  /*const sortedRoute: RouteCollectionInterface = {
-    id: routeCollection.id,
-    routes: routeCollection.routes.sort((a:RouteInterface,b:RouteInterface)=>(parseInt(a.from) - parseInt(b.from))),
-    type: routeCollection.type
-  }*/
+  graph = new DirectedGraph() 
   await Promise.all(routeCollection.routes.map(async (route)=>{
     let weightOfRoute: any = {}
+    if(route.to.length == 0) {
+      route.to = [route.from]
+    } 
     await Promise.all(route.to.map(async (to)=>{
       await weight(data.features[parseInt(route.from)].geometry["coordinates"], data.features[parseInt(to)].geometry["coordinates"], route.from.toString(), to.toString(), time).then((result: number)=>{
         weightOfRoute[to] = result
-
-        if(route.to != null) {
+        if(route.to != null && route.from != route.to[0]) {
           graph.addVertex(route.from, weightOfRoute)
         } else {
           graph.addVertex(route.from)
@@ -334,7 +331,6 @@ export async function connector(routeCollection: RouteCollectionInterface, time:
 
 export function route_setup(startingPoint: number, endPoint: number, pointCollection: PointCollectionInterface) {
   let out = dijkstra(graph, String(startingPoint))
-
   let points: Array<any> = []
 
   for (let i = 0; i < pointCollection.data.length; i++) {
@@ -361,9 +357,6 @@ export function route_setup(startingPoint: number, endPoint: number, pointCollec
     }
   })
 
-  console.log("x_path")
-  console.log(x_path)
-
   return x_path
 }
 
@@ -381,6 +374,7 @@ export function dijkstra(graph: any, startVertex: any) {
   }
   dist[startVertex] = 0
 
+  
   while (Object.keys(q).length !== 0) {
     let smallest = findSmallest(dist, q)
     let smallestNode = graph.vertices[smallest!]
@@ -480,80 +474,7 @@ export async function weight(a: Array<number>, b: Array<number>, from: String, t
   rules();
 
   calculatedData.push([from, to, response.rows[0].elements[0].duration.value, response.rows[0].elements[0].duration_in_traffic.value, distance, defuzzyfication()])
-  //console.log(calculatedData)
- 
-  /*console.log(from+"-"+to)
-  console.log("roadLengthVeryShort")
-  console.log(roadLengthVeryShort)
-  console.log("roadLengthShort")
-  console.log(roadLengthShort)
-  console.log("roadLengthModerate")
-  console.log(roadLengthModerate)
-  console.log("roadLengthLong")
-  console.log(roadLengthLong)
-  console.log("roadLengthVeryLong")
-  console.log(roadLengthVeryLong)
-  console.log("roadDensityVeryLow")
-  console.log(roadDensityVeryLow)
-  console.log("roadDensityShort")
-  console.log(roadDensityLow)
-  console.log("roadDensityModerate")
-  console.log(roadDensityModerate)
-  console.log("roadDensityLong")
-  console.log(roadDensityDense)
-  console.log("roadDensityVeryShort")
-  console.log(roadDensityVeryDense)
-  console.log("a1")
-  console.log(a1)
-  console.log("a2")
-  console.log(a2)
-  console.log("a3")
-  console.log(a3)
-  console.log("a4")
-  console.log(a4)
-  console.log("a5")
-  console.log(a5)
-  console.log("a6")
-  console.log(a6)
-  console.log("a7")
-  console.log(a7)
-  console.log("a8")
-  console.log(a8)
-  console.log("a9")
-  console.log(a9)
-  console.log("a10")
-  console.log(a10)
-  console.log("a11")
-  console.log(a11)
-  console.log("a12")
-  console.log(a12)
-  console.log("a13")
-  console.log(a13)
-  console.log("a14")
-  console.log(a14)
-  console.log("a15")
-  console.log(a15)
-  console.log("a16")
-  console.log(a16)
-  console.log("a17")
-  console.log(a17)
-  console.log("a18")
-  console.log(a18)
-  console.log("a19")
-  console.log(a19)
-  console.log("a20")
-  console.log(a20)
-  console.log("a21")
-  console.log(a21)
-  console.log("a22")
-  console.log(a22)
-  console.log("a23")
-  console.log(a23)
-  console.log("a24")
-  console.log(a24)
-  console.log("a25")
-  console.log(a25)
-  console.log("defuzzy")*/
+   
   if(isNaN(defuzzyfication())) {
     return 0
   } else {
