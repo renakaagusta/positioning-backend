@@ -1,8 +1,12 @@
 import Bcrypt from 'bcrypt'
+import * as firebase from 'firebase-admin'
+import fs from 'fs'
+import path from 'path'
+import { Readable } from 'stream'
+import { v4 as uuid } from 'uuid'
+import AuthenticationError from '../../exceptions/AuthenticationError'
 import InvariantError from '../../exceptions/InvariantError'
 import NotFoundError from '../../exceptions/NotFoundError'
-import AuthenticationError from '../../exceptions/AuthenticationError'
-import * as firebase from 'firebase-admin'
 import { UserInterface } from '../../model/user'
 
 class UsersService {
@@ -44,6 +48,40 @@ class UsersService {
 
     return user.id;
   }
+
+  async updateUserPhoto(userId: string, photo: any) {
+    const filePath = path.join(`/uploads/${String(userId)}/${photo.filenamename}`)
+
+    const storageRef = firebase.storage().bucket(`gs://positioning-bdf84.appspot.com`);
+    const publicUrl = await storageRef.upload(photo.path, {
+      public: true,
+      destination: filePath,
+      metadata: {
+        firebaseStorageDownloadTokens: uuid(),
+      }
+    });
+    
+    const user: UserInterface = await this.getUserById(userId)
+    
+    if(user) {
+      if(user.meta) {
+        user.meta.photo = publicUrl[0].metadata.mediaLink
+      } else {
+        user.meta = {
+          photo:  publicUrl[0].metadata.mediaLink
+        }
+      }
+    }
+
+    const result = this._firestore.collection('users').doc(userId).update(user)
+    
+    if (!result) {
+      throw new InvariantError('User gagal diperbarui');
+    }
+
+    return publicUrl[0].metadata.mediaLink;
+  }
+
 
   async deleteUser(userId: string) {
     const result = await this._firestore.collection('users').doc(userId!).delete()

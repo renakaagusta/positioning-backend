@@ -1,8 +1,8 @@
 import ClientError from "../../exceptions/ClientError";
-import { ReportCategory, ReportInterface, ReportStatus } from "../../model/report";
+import { ReportCategory, ReportInterface, ReportStatus, ReportType } from "../../model/report";
 import ReportsService from "../../services/firestore/ReportsService";
 import { ReportValidatorInterface } from "../../validator/reports";
-
+import {Request, Server} from "@hapi/hapi"
 export interface ReportHandlerInterface {
     _service: ReportsService
     _validator: ReportValidatorInterface;
@@ -30,10 +30,10 @@ class ReportsHandler implements ReportHandlerInterface {
         this.deleteReportHandler = this.deleteReportHandler.bind(this);
     }
 
-    async postReportHandler(request: any, h: any) {
+    async postReportHandler(request: Request, h: any) {
         try {           
             this._validator.validateReportPayload(request.payload);
-            const { title, description, rider, handler = null, category, createdAt, startingPoint, endPoint, type } = request.payload;
+            const { title, description, rider, handler = null, category, createdAt, startingPoint, endPoint, type } = request.payload as Record<string, any>;
 
             const report: ReportInterface = {
                 title: title as string,
@@ -42,9 +42,9 @@ class ReportsHandler implements ReportHandlerInterface {
                 rider: rider as string,
                 handler: handler as string,
                 status: ReportStatus.Created,
-                startingPoint: startingPoint,
-                endPoint: endPoint,
-                type: type,
+                startingPoint: startingPoint as number,
+                endPoint: endPoint as number,
+                type: type as ReportType,
                 createdAt: new Date(createdAt)
             }
 
@@ -119,7 +119,6 @@ class ReportsHandler implements ReportHandlerInterface {
 
             return response
         } catch (error) {
-            console.log(error)
             if (error instanceof ClientError) {
                 const response = h.response({
                     status: 'fail',

@@ -2,12 +2,14 @@ import { UserInterface, UserRole } from "../../model/user";
 import UsersService from '../../services/firestore/UsersService';
 import { UsersValidatorInterface } from '../../validator/users';
 import ClientError from '../../exceptions/ClientError';
+import { Request } from "@hapi/hapi";
 
 export interface UsersHandlerInterface {
   postUserHandler: (request: any, h: any) => void;
   getUserByIdHandler: (request: any, h: any) => void;
   getUsersHandler: (request: any, h: any) => void;
   putUserHandler: (request: any, h: any) => void;
+  putUserPhotoHandler: (request: any, h: any) => void;
   deleteUserHandler: (request: any, h: any) => void;
   _service: UsersService;
   _validator: UsersValidatorInterface;
@@ -25,6 +27,7 @@ class UsersHandler implements UsersHandlerInterface {
     this.getUserByIdHandler = this.getUserByIdHandler.bind(this);
     this.getUsersHandler = this.getUsersHandler.bind(this);
     this.putUserHandler = this.putUserHandler.bind(this);
+    this.putUserPhotoHandler = this.putUserPhotoHandler.bind(this);
     this.deleteUserHandler = this.deleteUserHandler.bind(this);
   }
 
@@ -182,6 +185,44 @@ class UsersHandler implements UsersHandlerInterface {
         message: 'User berhasil ditambahkan',
         data: {
           userId,
+        },
+      });
+      response.code(201);
+      return response;
+    } catch (error: any) {
+      console.log(error)
+      if (error instanceof ClientError) {
+        const response = h.response({
+          status: 'fail',
+          message: error.message,
+        });
+        response.code(error.statusCode);
+        return response;
+      }
+
+      // Server ERROR!
+      const response = h.response({
+        status: 'error',
+        message: 'Maaf, terjadi kegagalan pada server kami.',
+      });
+      response.code(500);
+      return response;
+    }
+  }
+
+  async putUserPhotoHandler(request: any, h: any) {
+    try {
+      this._validator.validateUserPayload(request.payload);
+      const { id } = request.params;
+      const { photo } = request.payload;
+
+      const photoUrl = await this._service.updateUserPhoto(id, photo);
+
+      const response = h.response({
+        status: 'success',
+        message: 'Profile berhasil diperbarui',
+        data: {
+          photoUrl,
         },
       });
       response.code(201);

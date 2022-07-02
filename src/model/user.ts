@@ -18,7 +18,7 @@ export interface UserLocationInterface {
 export interface UserMetaInterface {
   photo?: string,
   phoneNumber?: string,
-  location: UserLocationInterface
+  location?: UserLocationInterface
 }
 
 export interface UserInterface {

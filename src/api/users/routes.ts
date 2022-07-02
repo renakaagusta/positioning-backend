@@ -1,3 +1,4 @@
+import { RouteOptions } from "@hapi/hapi";
 import { UsersHandlerInterface } from "./handler";
 
 const routes = (handler: UsersHandlerInterface) => [
@@ -5,6 +6,20 @@ const routes = (handler: UsersHandlerInterface) => [
     method: 'POST',
     path: '/users',
     handler: handler.postUserHandler,
+  },
+  {
+    method: 'PUT',
+    path: '/users/{id}/photo',
+    handler: handler.putUserPhotoHandler,
+    config: {
+      payload: {
+          allow: 'multipart/form-data',
+          multipart: true,
+          parse: true,
+          output: 'file',
+          maxBytes: 5120000,
+      },
+    },
   },
   {
     method: 'PUT',
