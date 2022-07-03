@@ -14,6 +14,7 @@ export default {
   version: '1.0.0',
   register: async (server: Server, params: UserPluginParamsInterface) => {
     const usersHandler = new UsersHandler(params.service, params.validator);
+    // @ts-ignore: Unreachable code error
     server.route(routes(usersHandler));
   },
 };

@@ -18,7 +18,6 @@ class UsersService {
 
   async addUser(user: UserInterface) {
     await this.verifyNewUsername(user.username);
-    console.log(user)
 
     const hashedPassword = await Bcrypt.hash(user.password, 10);
 

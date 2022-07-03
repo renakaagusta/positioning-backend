@@ -34,8 +34,6 @@ class PointCollectionsHandler implements PointCollectionHandlerInterface {
             this._validator.validatePointCollectionPayload(request.payload);
             const { type, data } = request.payload;
 
-            console.log(data)
-
             const result = data.map((latitude: number, index: number) => ({
                 id: index,
                     geometry: {

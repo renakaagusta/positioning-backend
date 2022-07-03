@@ -35,7 +35,6 @@ class UsersHandler implements UsersHandlerInterface {
     try {
       this._validator.validateUserPayload(request.payload);
       const { username, password, name, email, role, latitude, longitude, phoneNumber } = request.payload;
-      console.log(request.payload)
       const user: UserInterface = {
         username: username as string,
         name: name as string,
@@ -154,7 +153,7 @@ class UsersHandler implements UsersHandlerInterface {
     try {
       this._validator.validateUserPayload(request.payload);
       const { id } = request.params;
-      const { username, password, name, email, latitude, longitude, phoneNumber, fcmToken } = request.payload;
+      const { username, password, name, email, latitude, longitude, phoneNumber, photo, fcmToken } = request.payload;
 
       const user: UserInterface = {
         id: id,
@@ -163,6 +162,7 @@ class UsersHandler implements UsersHandlerInterface {
         email: email as string,
         password: password as string,
         meta: {
+          photo: photo,
           phoneNumber: phoneNumber ?? null,
           location: {
             static: {
@@ -182,7 +182,7 @@ class UsersHandler implements UsersHandlerInterface {
 
       const response = h.response({
         status: 'success',
-        message: 'User berhasil ditambahkan',
+        message: 'User berhasil diperbarui',
         data: {
           userId,
         },
@@ -212,7 +212,6 @@ class UsersHandler implements UsersHandlerInterface {
 
   async putUserPhotoHandler(request: any, h: any) {
     try {
-      this._validator.validateUserPayload(request.payload);
       const { id } = request.params;
       const { photo } = request.payload;
 
